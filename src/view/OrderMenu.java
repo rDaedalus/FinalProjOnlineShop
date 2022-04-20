@@ -22,6 +22,7 @@ import javax.swing.JButton;
 import java.awt.TextArea;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.sql.Connection;
 import java.util.ArrayList;
 
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import controller.DataBaseController;
+
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import javax.swing.JTextField;
@@ -41,31 +45,41 @@ import javax.swing.JScrollPane;
 import java.awt.Toolkit;
 
 public class OrderMenu extends JFrame {
-
+    Connection connection = null;
+    DataBaseController dbControl = new DataBaseController();
     private JPanel contentPane;
 
-    public static void main(String[] args) {
+    // public static void main(String[] args) {
 
-        // connectDb();
+    // // connectDb();
 
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    OrderMenu frame = new OrderMenu();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+    // EventQueue.invokeLater(new Runnable() {
+    // public void run() {
+    // try {
+    // // OrderMenu frame = new OrderMenu();
+
+    // LoginPage frame = new LoginPage();
+    // frame.setVisible(true);
+
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+    // }
+    // });
+    // }
 
     private JTextField txt_addId;
     private JTextField txt_removeId;
     private JTable tbl_cart;
     private JTable tbl_inventory;
+    private JTable table;
+    private JTextField textField;
+    private JTextField textField_1;
+    private JTextField textField_2;
+    private JTextField textField_3;
 
     public OrderMenu() {
+        connection = dbControl.Connect();
         setIconImage(Toolkit.getDefaultToolkit().getImage(
                 "C:\\Users\\trist\\Documents\\_T.I.P\\2nd SEM\\MODULAR 2\\COMPROG\\final proj files\\icon.png"));
         setResizable(false);
@@ -219,6 +233,7 @@ public class OrderMenu extends JFrame {
 
         tbl_cart = new JTable();
         tbl_cart.getTableHeader().setReorderingAllowed(false);
+        tbl_inventory.setModel(dbControl.table_load(connection));
         tbl_cart.setModel(new DefaultTableModel(
                 new Object[][] {
                         { null, null, null, null },
@@ -302,52 +317,6 @@ public class OrderMenu extends JFrame {
         // }
         // });
 
-        JLabel lblNewLabel_1 = new JLabel("Remove Item(ID):");
-        GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-        gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
-        gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
-        gbc_lblNewLabel_1.gridx = 2;
-        gbc_lblNewLabel_1.gridy = 4;
-        order_payment.add(lblNewLabel_1, gbc_lblNewLabel_1);
-
-        txt_removeId = new JTextField();
-        GridBagConstraints gbc_txt_removeId = new GridBagConstraints();
-        gbc_txt_removeId.gridwidth = 2;
-        gbc_txt_removeId.insets = new Insets(0, 0, 5, 5);
-        gbc_txt_removeId.fill = GridBagConstraints.HORIZONTAL;
-        gbc_txt_removeId.gridx = 3;
-        gbc_txt_removeId.gridy = 4;
-        order_payment.add(txt_removeId, gbc_txt_removeId);
-        txt_removeId.setColumns(10);
-
-        JButton btnConfirmRemove = new JButton("Confirm");
-        GridBagConstraints gbc_btnConfirmRemove = new GridBagConstraints();
-        gbc_btnConfirmRemove.insets = new Insets(0, 0, 5, 5);
-        gbc_btnConfirmRemove.gridx = 5;
-        gbc_btnConfirmRemove.gridy = 4;
-        order_payment.add(btnConfirmRemove, gbc_btnConfirmRemove);
-
-        // btnConfirmRemove.addActionListener(new ActionListener(){
-        // public void actionPeformed(ActionEvent e){
-        // tbl_cart.removeRow()
-
-        // String query = "Select * from product where product_id = " + idInput;
-        // ps = pst.executeQuery(query);
-
-        // //update item stock after removing from cart
-        // try{
-        // while(rs.next()){
-        // int stockUpdate = (rs.getInt("product_qnty")) + qtyInput;
-        // String prodUpdate = "Update product set product_qnty = "+ stockUpdate +"where
-        // product_id = "+idInput;
-        // }
-        // pst.executeUpdate(prodUpdate);
-        // }catch(SQLException e1){
-        // e1.printStackTrace;
-        // }
-        // }
-        // });
-
         JButton btnPromos = new JButton("Promos");
         GridBagConstraints gbc_btnPromos = new GridBagConstraints();
         gbc_btnPromos.insets = new Insets(0, 0, 5, 5);
@@ -364,7 +333,67 @@ public class OrderMenu extends JFrame {
 
         JPanel inventory = new JPanel();
         tabbedPane.addTab("Inventory", null, inventory, null);
+        inventory.setLayout(null);
+
+        table = new JTable();
+        table.setBounds(10, 11, 330, 341);
+        inventory.add(table);
+
+        JButton AddBtn = new JButton("Add");
+        AddBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+        AddBtn.setBounds(162, 455, 89, 23);
+        inventory.add(AddBtn);
+
+        JButton DeleteBtn = new JButton("Delete");
+        DeleteBtn.setBounds(275, 455, 89, 23);
+        inventory.add(DeleteBtn);
+
+        JButton Edit = new JButton("Edit");
+        Edit.setBounds(404, 455, 89, 23);
+        inventory.add(Edit);
+
+        JButton btnNewButton_3 = new JButton("Select");
+        btnNewButton_3.setBounds(36, 455, 89, 23);
+        inventory.add(btnNewButton_3);
+
+        textField = new JTextField();
+        textField.setBounds(420, 37, 86, 20);
+        inventory.add(textField);
+        textField.setColumns(10);
+
+        textField_1 = new JTextField();
+        textField_1.setBounds(420, 316, 86, 20);
+        inventory.add(textField_1);
+        textField_1.setColumns(10);
+
+        textField_2 = new JTextField();
+        textField_2.setBounds(420, 130, 86, 20);
+        inventory.add(textField_2);
+        textField_2.setColumns(10);
+
+        textField_3 = new JTextField();
+        textField_3.setBounds(420, 228, 86, 20);
+        inventory.add(textField_3);
+        textField_3.setColumns(10);
+
+        JLabel lblNewLabel_2 = new JLabel("New label");
+        lblNewLabel_2.setBounds(350, 40, 46, 14);
+        inventory.add(lblNewLabel_2);
+
+        JLabel lblNewLabel_3 = new JLabel("New label");
+        lblNewLabel_3.setBounds(350, 133, 46, 14);
+        inventory.add(lblNewLabel_3);
+
+        JLabel lblNewLabel_4 = new JLabel("New label");
+        lblNewLabel_4.setBounds(350, 231, 46, 14);
+        inventory.add(lblNewLabel_4);
+
+        JLabel lblNewLabel_5 = new JLabel("New label");
+        lblNewLabel_5.setBounds(350, 319, 46, 14);
+        inventory.add(lblNewLabel_5);
 
     }
-
 }
