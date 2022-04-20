@@ -23,6 +23,7 @@ import java.awt.TextArea;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import javax.swing.event.ChangeListener;
@@ -48,10 +49,11 @@ public class OrderMenu extends JFrame {
     Connection connection = null;
     DataBaseController dbControl = new DataBaseController();
     private JPanel contentPane;
+    JFrame frame = new JFrame("GUI");
 
     // public static void main(String[] args) {
 
-    // // connectDb();
+    
 
     // EventQueue.invokeLater(new Runnable() {
     // public void run() {
@@ -79,7 +81,10 @@ public class OrderMenu extends JFrame {
     private JTextField textField_3;
 
     public OrderMenu() {
-        connection = dbControl.Connect();
+    	
+    	connection = dbControl.Connect();
+        
+        
         setIconImage(Toolkit.getDefaultToolkit().getImage(
                 "C:\\Users\\trist\\Documents\\_T.I.P\\2nd SEM\\MODULAR 2\\COMPROG\\final proj files\\icon.png"));
         setResizable(false);
@@ -280,42 +285,68 @@ public class OrderMenu extends JFrame {
         tbl_cart.getColumnModel().getColumn(3).setResizable(false);
         tbl_cart.getColumnModel().getColumn(3).setMinWidth(60);
         pane_cart.setViewportView(tbl_cart);
+        
+        JButton btnDelete = new JButton("Delete");
+        btnDelete.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+                        DefaultTableModel tblModel = (DefaultTableModel) tbl_cart.getModel(); 
+                        //delete row
+                        if(tbl_cart.getSelectedRowCount ()==1){
+                                //if single row is selected then delete
+                                tblModel.removeRow(tbl_cart.getSelectedRow());
+                        }else{
+                                if(tbl_cart.getRowCount()==0){
+                                        //if table is empty then display:
+                                        JOptionPane.showMessageDialog(frame, "Table is Empty.");
+                                }else{
+                                        //if table is not empty but row is not selected/multiple rows selected
+                                        JOptionPane.showMessageDialog(frame, "Please select a single row to delete");
+                                }
+                        }
+        	}
+        });
+        GridBagConstraints gbc_btnDelete = new GridBagConstraints();
+        gbc_btnDelete.insets = new Insets(0, 0, 5, 5);
+        gbc_btnDelete.gridx = 2;
+        gbc_btnDelete.gridy = 4;
+        order_payment.add(btnDelete, gbc_btnDelete);
 
         // ResultSet ps = null;
         // int qtyInput = (Integer)spin_qty.getValue();
-        // int idInput = txt_addId.getText();
+        // int idInput = Integer.parseInt(txt_addId.getText());
+        
+        btnConfirmOrder.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e) {
+			
+		// 	// TODO Auto-generated method stub
+		// 	 String query = "Select * from product where product_id = '" + idInput+"'";
+                // ps = pst.executeQuery(query);
 
-        // btnConfirmOrder.addActionListener(new ActionListener(){
-        // public void actionPeformed(ActionEvent e){
-        // String query = "Select * from product where product_id = " + idInput;
-        // ps = pst.executeQuery(query);
+                // //update item stock after adding to cart
+                // try{
+                //  while(rs.next()){
+                //         int stockUpdate = (rs.getInt("product_qnty")) - qtyInput;
+                //         String prodUpdate = "Update product set product_qnty = '"+ stockUpdate +"' where product_id = '"+idInput+"'";
+                // }
+                // pst.executeUpdate(prodUpdate);
+                // }catch(SQLException e1){
+                //         e1.printStackTrace;
+                // }
 
-        // //update item stock after adding to cart
-        // try{
-        // while(rs.next()){
-        // int stockUpdate = (rs.getInt("product_qnty")) - qtyInput;
-        // String prodUpdate = "Update product set product_qnty = "+ stockUpdate +"where
-        // product_id = "+idInput;
-        // }
-        // pst.executeUpdate(prodUpdate);
-        // }catch(SQLException e1){
-        // e1.printStackTrace;
-        // }
-
-        // //add item details to cart
-        // try{
-        // while(rs.next()){
-        // int id = rs.getInt("product_id");
-        // String name = rs.getString("product_name");
-        // int qty = qtyInput;
-        // int price = (rs.getInt("product_price")) * qty;
-        // tbl_cart.addRow(new Object[][]{id, name, qty, price});
-        // }
-        // }catch(SQLException e1){
-        // e1.printStackTrace;
-        // }
-        // }
-        // });
+                // //add item details to cart
+                //         try{
+                //                 while(rs.next()){
+                //                         int id = rs.getInt("product_id");
+                //                         String name = rs.getString("product_name");
+                //                         int qty = qtyInput;
+                //                         int price = (rs.getInt("product_price")) * qty;
+                //                         tbl_cart.addRow(new Object[][]{id, name, qty, price});
+                //                 }
+                //         }catch(SQLException e1){
+                //                 e1.printStackTrace;
+                //         }
+                // }
+		}});
 
         JButton btnPromos = new JButton("Promos");
         GridBagConstraints gbc_btnPromos = new GridBagConstraints();
