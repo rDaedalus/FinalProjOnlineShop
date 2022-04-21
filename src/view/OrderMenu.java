@@ -45,6 +45,7 @@ import javax.swing.JTextField;
 import javax.swing.JSeparator;
 import javax.swing.JScrollPane;
 import java.awt.Toolkit;
+import javax.swing.border.BevelBorder;
 
 public class OrderMenu extends JFrame {
         Connection connection = null;
@@ -81,6 +82,7 @@ public class OrderMenu extends JFrame {
         private JTable table;
 
         public OrderMenu() {
+        	setBackground(Color.DARK_GRAY);
                 connection = dbControl.Connect();
                 setIconImage(Toolkit.getDefaultToolkit().getImage(
                                 "C:\\Users\\trist\\Documents\\_T.I.P\\2nd SEM\\MODULAR 2\\COMPROG\\final proj files\\icon.png"));
@@ -91,19 +93,24 @@ public class OrderMenu extends JFrame {
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 setBounds(100, 100, 638, 665);
                 contentPane = new JPanel();
+                contentPane.setBackground(Color.DARK_GRAY);
                 contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
                 contentPane.setLayout(new BorderLayout(0, 0));
                 setContentPane(contentPane);
 
                 JLabel lblTitle = new JLabel("Neo Products Computer Peripherals Shop");
+                lblTitle.setForeground(new Color(0, 204, 255));
+                lblTitle.setBackground(Color.DARK_GRAY);
                 lblTitle.setFont(new Font("Tahoma", Font.BOLD, 18));
                 lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
                 contentPane.add(lblTitle, BorderLayout.NORTH);
 
                 JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+                tabbedPane.setBackground(Color.DARK_GRAY);
                 contentPane.add(tabbedPane, BorderLayout.CENTER);
 
                 JPanel order_payment = new JPanel();
+                order_payment.setBackground(Color.DARK_GRAY);
                 order_payment.setBorder(null);
                 tabbedPane.addTab("Ordering and Payment", null, order_payment, null);
                 GridBagLayout gbl_order_payment = new GridBagLayout();
@@ -114,6 +121,7 @@ public class OrderMenu extends JFrame {
                 order_payment.setLayout(gbl_order_payment);
 
                 JLabel lblNewLabel_14 = new JLabel("Item List");
+                lblNewLabel_14.setForeground(new Color(51, 204, 255));
                 lblNewLabel_14.setHorizontalAlignment(SwingConstants.LEFT);
                 lblNewLabel_14.setFont(new Font("Tahoma", Font.BOLD, 15));
                 GridBagConstraints gbc_lblNewLabel_14 = new GridBagConstraints();
@@ -133,43 +141,33 @@ public class OrderMenu extends JFrame {
                 order_payment.add(pane_inventory, gbc_pane_inventory);
 
                 tbl_inventory = new JTable();
+                tbl_inventory.setBorder(null);
+                tbl_inventory.setForeground(new Color(255, 255, 255));
+                tbl_inventory.setBackground(new Color(51, 51, 51));
                 tbl_inventory.getTableHeader().setReorderingAllowed(false);
                 tbl_inventory.setModel(new DefaultTableModel(
-                                new Object[][] {
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                },
-                                new String[] {
-                                                "ID", "Product Name", "Stock", "Price"
-                                }) {
-                        Class[] columnTypes = new Class[] {
-                                        Integer.class, String.class, Integer.class, Integer.class
-                        };
-
-                        public Class getColumnClass(int columnIndex) {
-                                return columnTypes[columnIndex];
-                        }
-
-                        boolean[] columnEditables = new boolean[] {
-                                        false, false, false, false
-                        };
-
-                        public boolean isCellEditable(int row, int column) {
-                                return columnEditables[column];
-                        }
+                	new Object[][] {
+                		{new Integer(1), "Logitech H151 Headset", new Double(750.0), new Integer(10)},
+                		{new Integer(4), "Thermaltake UX 100 ARGB ", new Double(950.0), new Integer(3)},
+                		{new Integer(5), "Razer Seiren Mini Streaming Microphone", new Double(2400.0), new Integer(10)},
+                		{new Integer(6), "Logitech G604 Hero Wireless Gaming Mouse", new Double(4250.0), new Integer(10)},
+                		{new Integer(7), "Logitech Z313 2.1 Speaker And Subwoofer", new Double(1700.0), new Integer(6)},
+                		{new Integer(8), "Razer Huntsman Mini Purple", new Double(3995.0), new Integer(9)},
+                		{new Integer(9), "Seagate 1TB Slim Red HDD", new Double(2100.0), new Integer(7)},
+                		{new Integer(10), "Canon G3010 Wireless 3in1 CIS Printer", new Double(10550.0), new Integer(4)},
+                		{new Integer(11), "Rapoo C280 USB 2.0 Rotatable Webcam", new Double(1650.0), new Integer(3)},
+                		{new Integer(12), "Wanbo X1 LCD Projector", new Double(11535.0), new Integer(6)},
+                	},
+                	new String[] {
+                		"product_id", "product_name", "product_price", "product_qnty"
+                	}
+                ) {
+                	boolean[] columnEditables = new boolean[] {
+                		false, false, false, false
+                	};
+                	public boolean isCellEditable(int row, int column) {
+                		return columnEditables[column];
+                	}
                 });
                 tbl_inventory.getColumnModel().getColumn(0).setResizable(false);
                 tbl_inventory.getColumnModel().getColumn(0).setMinWidth(50);
@@ -183,6 +181,7 @@ public class OrderMenu extends JFrame {
                 pane_inventory.setViewportView(tbl_inventory);
 
                 JLabel lblNewLabel = new JLabel("Add Item(ID):");
+                lblNewLabel.setForeground(Color.WHITE);
                 GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
                 gbc_lblNewLabel.anchor = GridBagConstraints.ABOVE_BASELINE_TRAILING;
                 gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
@@ -191,6 +190,8 @@ public class OrderMenu extends JFrame {
                 order_payment.add(lblNewLabel, gbc_lblNewLabel);
 
                 txt_addId = new JTextField();
+                txt_addId.setBackground(new Color(0, 0, 0));
+                txt_addId.setForeground(Color.WHITE);
                 GridBagConstraints gbc_txt_addId = new GridBagConstraints();
                 gbc_txt_addId.insets = new Insets(0, 0, 5, 5);
                 gbc_txt_addId.fill = GridBagConstraints.HORIZONTAL;
@@ -207,14 +208,10 @@ public class OrderMenu extends JFrame {
                 gbc_spin_qty.gridy = 1;
                 order_payment.add(spin_qty, gbc_spin_qty);
 
-                JButton btnConfirmOrder = new JButton("Confirm");
-                GridBagConstraints gbc_btnConfirmOrder = new GridBagConstraints();
-                gbc_btnConfirmOrder.insets = new Insets(0, 0, 5, 5);
-                gbc_btnConfirmOrder.gridx = 5;
-                gbc_btnConfirmOrder.gridy = 1;
-                order_payment.add(btnConfirmOrder, gbc_btnConfirmOrder);
+                
 
                 JLabel lblNewLabel_11 = new JLabel("My Cart");
+                lblNewLabel_11.setForeground(new Color(0, 204, 255));
                 lblNewLabel_11.setHorizontalAlignment(SwingConstants.LEFT);
                 lblNewLabel_11.setFont(new Font("Tahoma", Font.BOLD, 15));
                 GridBagConstraints gbc_lblNewLabel_11 = new GridBagConstraints();
@@ -234,43 +231,43 @@ public class OrderMenu extends JFrame {
                 order_payment.add(pane_cart, gbc_pane_cart);
 
                 tbl_cart = new JTable();
+                tbl_cart.setForeground(new Color(255, 255, 255));
+                tbl_cart.setBackground(new Color(51, 51, 51));
                 tbl_cart.getTableHeader().setReorderingAllowed(false);
                 tbl_inventory.setModel(dbControl.table_load(connection));
                 tbl_cart.setModel(new DefaultTableModel(
-                                new Object[][] {
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                                { null, null, null, null },
-                                },
-                                new String[] {
-                                                "ID", "Product Name", "Quantity", "Price"
-                                }) {
-                        Class[] columnTypes = new Class[] {
-                                        Integer.class, String.class, Integer.class, Integer.class
-                        };
-
-                        public Class getColumnClass(int columnIndex) {
-                                return columnTypes[columnIndex];
-                        }
-
-                        boolean[] columnEditables = new boolean[] {
-                                        false, false, false, false
-                        };
-
-                        public boolean isCellEditable(int row, int column) {
-                                return columnEditables[column];
-                        }
+                	new String[][] {
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                		{null, null, null, null},
+                	},
+                	new String[] {
+                		"ID", "Product Name", "Quantity", "Price"
+                	}
+                ) {
+                	Class[] columnTypes = new Class[] {
+                		Integer.class, String.class, Integer.class, Integer.class
+                	};
+                	public Class getColumnClass(int columnIndex) {
+                		return columnTypes[columnIndex];
+                	}
+                	boolean[] columnEditables = new boolean[] {
+                		false, false, false, false
+                	};
+                	public boolean isCellEditable(int row, int column) {
+                		return columnEditables[column];
+                	}
                 });
                 tbl_cart.getColumnModel().getColumn(0).setResizable(false);
                 tbl_cart.getColumnModel().getColumn(0).setMinWidth(50);
@@ -283,7 +280,28 @@ public class OrderMenu extends JFrame {
                 tbl_cart.getColumnModel().getColumn(3).setMinWidth(60);
                 pane_cart.setViewportView(tbl_cart);
 
+                JButton btnConfirmOrder = new JButton("Confirm");
+                btnConfirmOrder.setBackground(new Color(0, 204, 255));
+                btnConfirmOrder.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                                int spinValue = (Integer)spin_qty.getValue();
+                                int idValue = Integer.parseInt(txt_addId.getText());
+
+                                Product product = new Product();
+                                
+                                dbControl.cartUpdate(connection, product, idValue, spinValue);
+
+                                // tbl_cart.add(new Object[][]{new Integer(product.getProductId()), , , });
+                        }   
+                });
+                GridBagConstraints gbc_btnConfirmOrder = new GridBagConstraints();
+                gbc_btnConfirmOrder.insets = new Insets(0, 0, 5, 5);
+                gbc_btnConfirmOrder.gridx = 5;
+                gbc_btnConfirmOrder.gridy = 1;
+                order_payment.add(btnConfirmOrder, gbc_btnConfirmOrder);
+
                 JButton btnDelete = new JButton("Delete");
+                btnDelete.setBackground(new Color(0, 204, 255));
                 btnDelete.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                                 DefaultTableModel tblModel = (DefaultTableModel) tbl_cart.getModel();
@@ -309,8 +327,6 @@ public class OrderMenu extends JFrame {
                 gbc_btnDelete.gridy = 4;
                 order_payment.add(btnDelete, gbc_btnDelete);
 
-                btnConfirmOrder.addActionListener(new ActionListener() {
-                        public void actionPeformed(ActionEvent e) {
                                 // String query = "Select * from product where product_id = " + idInput;
                                 // ps = pst.executeQuery(query);
 
@@ -338,16 +354,10 @@ public class OrderMenu extends JFrame {
                                 // }catch(SQLException e1){
                                 // e1.printStackTrace;
                                 // }
-                        }
 
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                                // TODO Auto-generated method stub
-
-                        }
-                });
 
                 JButton btnPromos = new JButton("Promos");
+                btnPromos.setBackground(new Color(0, 204, 255));
                 GridBagConstraints gbc_btnPromos = new GridBagConstraints();
                 gbc_btnPromos.insets = new Insets(0, 0, 5, 5);
                 gbc_btnPromos.gridx = 2;
@@ -355,6 +365,7 @@ public class OrderMenu extends JFrame {
                 order_payment.add(btnPromos, gbc_btnPromos);
 
                 JButton btn_Payment = new JButton("Payment");
+                btn_Payment.setBackground(new Color(0, 204, 255));
                 GridBagConstraints gbc_btn_Payment = new GridBagConstraints();
                 gbc_btn_Payment.insets = new Insets(0, 0, 5, 5);
                 gbc_btn_Payment.gridx = 5;

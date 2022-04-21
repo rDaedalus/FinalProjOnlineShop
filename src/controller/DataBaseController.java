@@ -25,8 +25,8 @@ public class DataBaseController {
 
         try {
             String jdbcURL = "jdbc:mysql://localhost:3306/onlineshop";
-            String username = "Daedalus";
-            String password = "1Casiowatch";
+            String username = "root";
+            String password = "password";
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(jdbcURL, username, password);
             // JOptionPane.showMessageDialog(null, "Connected");
@@ -60,6 +60,34 @@ public class DataBaseController {
         }
         return null;
 
+    }
+
+
+    public String cartUpdate (Connection con, Product product, int idInput, int qtyInput){
+        
+        try{
+            //get qty of product by item id
+            pst.executeQuery("Select product_qnty from product where product_id = " + idInput);
+
+            while(rs.next()){
+                //computes new stock value for item
+
+                int stockUpdate = (rs.getInt("product_qnty")) - qtyInput;
+
+                // String prodUpdate = "Update product set product_qnty = "+ stockUpdate +"where product_id = "+idInput;               
+                    pst = con.prepareStatement("update product set product_name= ?,product_price=?,product_qnty=? where product_id = "+idInput);
+               
+                // pst.executeUpdate(prodUpdate);
+                pst.setString(1, product.getProductName());
+                pst.setDouble(2, product.getPrice());
+                pst.setInt(3, stockUpdate);
+                pst.setInt(4, product.getProductId());
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String prepUpdate(Connection con, Product product) {
@@ -99,9 +127,7 @@ public class DataBaseController {
             pst.setString(2, user.getPassword());
             rs = pst.executeQuery();
             if (rs.next()) {
-
                 OrderMenu orderMenu = new OrderMenu();
-
                 orderMenu.show();
                 JOptionPane.showMessageDialog(null, "You have successfully logged in");
             } else {
