@@ -153,28 +153,28 @@ public class DataBaseController {
         return p1;
 
     }
-    
+
     public String prepDelete(Connection con, Product product) {
 
-		try {
+        try {
 
-			pst = con
-					.prepareStatement("delete from product where product_id =?");
-			pst.setInt(1, product.getProductId());
-			int k = pst.executeUpdate();
-			if (k == 1) {
-				JOptionPane.showMessageDialog(null, "Record Delete");
+            pst = con
+                    .prepareStatement("delete from product where product_id =?");
+            pst.setInt(1, product.getProductId());
+            int k = pst.executeUpdate();
+            if (k == 1) {
+                JOptionPane.showMessageDialog(null, "Record Delete");
 
-			} else {
-				JOptionPane.showMessageDialog(null, "Record not Delete");
-			}
+            } else {
+                JOptionPane.showMessageDialog(null, "Record not Delete");
+            }
 
-		} catch (SQLException e) {
+        } catch (SQLException e) {
 
-			e.printStackTrace();
-		}
-		return null;
+            e.printStackTrace();
+        }
+        return null;
 
-	}
+    }
 
 }
