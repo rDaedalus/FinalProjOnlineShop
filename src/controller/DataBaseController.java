@@ -25,8 +25,8 @@ public class DataBaseController {
 
         try {
             String jdbcURL = "jdbc:mysql://localhost:3306/onlineshop";
-            String username = "root";
-            String password = "password";
+            String username = "Daedalus";
+            String password = "1Casiowatch";
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(jdbcURL, username, password);
             // JOptionPane.showMessageDialog(null, "Connected");
@@ -62,21 +62,23 @@ public class DataBaseController {
 
     }
 
+    public String cartUpdate(Connection con, Product product, int idInput, int qtyInput) {
 
-    public String cartUpdate (Connection con, Product product, int idInput, int qtyInput){
-        
-        try{
-            //get qty of product by item id
+        try {
+            // get qty of product by item id
             pst.executeQuery("Select product_qnty from product where product_id = " + idInput);
 
-            while(rs.next()){
-                //computes new stock value for item
+            while (rs.next()) {
+                // computes new stock value for item
 
                 int stockUpdate = (rs.getInt("product_qnty")) - qtyInput;
 
-                // String prodUpdate = "Update product set product_qnty = "+ stockUpdate +"where product_id = "+idInput;               
-                    pst = con.prepareStatement("update product set product_name= ?,product_price=?,product_qnty=? where product_id = "+idInput);
-               
+                // String prodUpdate = "Update product set product_qnty = "+ stockUpdate +"where
+                // product_id = "+idInput;
+                pst = con.prepareStatement(
+                        "update product set product_name= ?,product_price=?,product_qnty=? where product_id = "
+                                + idInput);
+
                 // pst.executeUpdate(prodUpdate);
                 pst.setString(1, product.getProductName());
                 pst.setDouble(2, product.getPrice());
@@ -84,7 +86,7 @@ public class DataBaseController {
                 pst.setInt(4, product.getProductId());
             }
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;

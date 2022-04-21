@@ -38,6 +38,7 @@ import javax.swing.table.DefaultTableModel;
 
 import controller.DataBaseController;
 import model.Product;
+import view.CustomerService.Help;
 
 import javax.swing.border.LineBorder;
 import java.awt.Color;
@@ -131,6 +132,22 @@ public class OrderMenu extends JFrame {
                 gbc_lblNewLabel_14.gridx = 1;
                 gbc_lblNewLabel_14.gridy = 0;
                 order_payment.add(lblNewLabel_14, gbc_lblNewLabel_14);
+                
+                JButton btnNewButton = new JButton("Help");
+                btnNewButton.addActionListener(new ActionListener() {
+                	public void actionPerformed(ActionEvent e) {
+                	Help h = new Help();
+                	h.setVisible(true);
+                		
+                		
+                		
+                	}
+                });
+                GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
+                gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
+                gbc_btnNewButton.gridx = 5;
+                gbc_btnNewButton.gridy = 0;
+                order_payment.add(btnNewButton, gbc_btnNewButton);
 
                 JScrollPane pane_inventory = new JScrollPane();
                 GridBagConstraints gbc_pane_inventory = new GridBagConstraints();
