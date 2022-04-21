@@ -29,7 +29,7 @@ public class DataBaseController {
             String password = "1Casiowatch";
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(jdbcURL, username, password);
-            JOptionPane.showMessageDialog(null, "Connected");
+            // JOptionPane.showMessageDialog(null, "Connected");
         } catch (ClassNotFoundException | SQLException e) {
 
         }
@@ -127,5 +127,54 @@ public class DataBaseController {
         }
         return DbUtils.resultSetToTableModel(rs);
     }
+
+    public Product prepSearch(Connection con, Product product) {
+        Product p1 = new Product();
+        try {
+
+            pst = con
+                    .prepareStatement(
+                            "select product_name,product_price,product_qnty from product where product_id = ?");
+
+            pst.setInt(1, product.getProductId());
+            rs = pst.executeQuery();
+
+            if (rs.next() == true) {
+                p1.setProductName(rs.getString(1));
+                p1.setPrice(rs.getInt(2));
+                p1.setQnty(rs.getInt(3));
+            } else {
+            }
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+        return p1;
+
+    }
+    
+    public String prepDelete(Connection con, Product product) {
+
+		try {
+
+			pst = con
+					.prepareStatement("delete from product where product_id =?");
+			pst.setInt(1, product.getProductId());
+			int k = pst.executeUpdate();
+			if (k == 1) {
+				JOptionPane.showMessageDialog(null, "Record Delete");
+
+			} else {
+				JOptionPane.showMessageDialog(null, "Record not Delete");
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return null;
+
+	}
 
 }

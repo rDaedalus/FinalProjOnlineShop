@@ -84,4 +84,5 @@ public class LoginPage extends JFrame {
 		btnNewButton.setBounds(92, 188, 89, 23);
 		contentPane.add(btnNewButton);
 	}
+
 }
