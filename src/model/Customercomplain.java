@@ -1,4 +1,4 @@
-package view.CustomerService;
+package model;
 
 public class Customercomplain {
 	private int customerId;

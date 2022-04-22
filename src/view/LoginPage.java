@@ -32,8 +32,10 @@ public class LoginPage extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					LoginPage frame = new LoginPage();
-					frame.setVisible(true);
+					// LoginPage frame = new LoginPage();
+					// frame.setVisible(true);
+					OrderMenu n = new OrderMenu();
+					n.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
