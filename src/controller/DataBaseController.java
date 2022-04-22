@@ -27,19 +27,16 @@ public class DataBaseController {
     int bill;
 
     public Connection Connect() {
-
         try {
             String jdbcURL = "jdbc:mysql://localhost:3306/onlineshop";
-            String username = "Daedalus";
-            String password = "1Casiowatch";
+            String username = "root";
+            String password = "password";
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(jdbcURL, username, password);
             // JOptionPane.showMessageDialog(null, "Connected");
         } catch (ClassNotFoundException | SQLException e) {
-
         }
         return connection;
-
     }
 
     public String prepAdd(Connection con, Product product) {
@@ -61,6 +58,17 @@ public class DataBaseController {
         }
         return null;
     }
+
+    public double discountedBill(Connection con, double bill, double discount){
+        double discountVal = discount * bill;
+        double promoPrice = bill - discountVal;
+        return promoPrice;
+    }
+
+    // public double setDiscountedBill(double totalInput){
+    //     double total = totalInput;
+    //     return total;
+    // }
 
     public String cartUpdate(Connection con, Product product, int idInput, int qtyInput) throws Exception {
         try {

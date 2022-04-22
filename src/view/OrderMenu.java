@@ -41,6 +41,7 @@ import controller.DataBaseController;
 import model.CartItem;
 import model.Product;
 import view.CustomerService.Help;
+import view.Promos;
 
 import javax.swing.border.LineBorder;
 import java.awt.Color;
@@ -86,6 +87,7 @@ public class OrderMenu extends JFrame {
         private JTextField productInvQntyTxt;
         private JTextField productNameTxt;
         private JTable table;
+
 
         public OrderMenu() {
                 connection = dbControl.Connect();
@@ -335,8 +337,10 @@ public class OrderMenu extends JFrame {
 
                                                 bill = dbControl.getSum(tbl_cart.getModel());
                                                 lblTotalBill.setText("TOTAL: " + bill);
-                                                // item.setTotalPrice(dbControl.getSum(tbl_cart.getModel()));
+                                                item.setTotalPrice(dbControl.getSum(tbl_cart.getModel()));
                                                 // lblTotalBill.setText("TOTAL: P" + item.getTotalPrice());
+                                                // bill = dbControl.saveTotal(item.getTotalPrice());
+
                                         } catch (Exception e1) {
                                                 e1.printStackTrace();
                                         }
@@ -387,8 +391,9 @@ public class OrderMenu extends JFrame {
                                 }
                                 bill = dbControl.getSum(tbl_cart.getModel());
                                 lblTotalBill.setText("TOTAL: " + bill);
-                                // item.setTotalPrice(dbControl.getSum(tbl_cart.getModel()));
+                                item.setTotalPrice(dbControl.getSum(tbl_cart.getModel()));
                                 // lblTotalBill.setText("TOTAL: P" + item.getTotalPrice());
+                                // bill = dbControl.saveTotal(item.getTotalPrice());
                         }
                 });
                 GridBagConstraints gbc_btnDelete = new GridBagConstraints();
@@ -398,6 +403,15 @@ public class OrderMenu extends JFrame {
                 order_payment.add(btnDelete, gbc_btnDelete);
 
                 JButton btnPromos = new JButton("Promos");
+                btnPromos.addActionListener(new ActionListener() {
+                	public void actionPerformed(ActionEvent e) {
+                                Promos promoPane = new Promos(bill);
+                                promoPane.setVisible(true);
+                                
+                                // bill = promoPane.getDiscountedBill();
+                                // lblTotalBill.setText("TOTAL: " + bill);
+                	}
+                });
                 btnPromos.setBackground(new Color(0, 204, 255));
                 GridBagConstraints gbc_btnPromos = new GridBagConstraints();
                 gbc_btnPromos.insets = new Insets(0, 0, 5, 5);
@@ -408,10 +422,11 @@ public class OrderMenu extends JFrame {
                 JButton btn_Payment = new JButton("Payment");
                 btn_Payment.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
+
                                 bill = dbControl.getSum(tbl_cart.getModel());
                                 String[] options = { "OK" };
                                 JPanel panel = new JPanel();
-                                JLabel lbl = new JLabel("This is the TOTAL" + bill + "\nEnter Payment");
+                                JLabel lbl = new JLabel("TOTAL: P" + bill + " Enter Payment");
                                 JTextField txt = new JTextField(10);
                                 panel.add(lbl);
                                 panel.add(txt);
@@ -434,17 +449,14 @@ public class OrderMenu extends JFrame {
                                                                 JOptionPane.OK_CANCEL_OPTION,
                                                                 JOptionPane.QUESTION_MESSAGE, null, options,
                                                                 options[0]);
-
                                                 if (Option2 == 0) {
                                                 	Ship s = new Ship();
                                                 	s.setVisible(true);
                                                 }
-
                                         }
                                 } catch (Exception e1) {
                                         JOptionPane.showMessageDialog(null, e1.getLocalizedMessage());
                                 }
-
                         }
                 });
                 btn_Payment.setBackground(new Color(0, 204, 255));
@@ -453,7 +465,6 @@ public class OrderMenu extends JFrame {
                 gbc_btn_Payment.gridx = 5;
                 gbc_btn_Payment.gridy = 5;
                 order_payment.add(btn_Payment, gbc_btn_Payment);
-
                 // Inventory Add Button to Database
                 JPanel inventory = new JPanel();
                 tabbedPane.addTab("Inventory", null, inventory, null);
@@ -473,10 +484,8 @@ public class OrderMenu extends JFrame {
                                 productInvQntyTxt.setText("");
                         }
                 });
-
                 inventory.setLayout(null);
                 inventory.add(AddBtn);
-
                 // Inventory Delete Button to Database
                 JButton DeleteBtn = new JButton("Delete");
                 DeleteBtn.addActionListener(new ActionListener() {
@@ -486,12 +495,10 @@ public class OrderMenu extends JFrame {
                                 dbControl.prepDelete(connection, product);
                                 table.setModel(dbControl.table_load(connection));
                                 productIDtxt.setText("");
-
                         }
                 });
                 DeleteBtn.setBounds(275, 455, 89, 23);
                 inventory.add(DeleteBtn);
-
                 // Inventory Update Button to Database
                 JButton Edit = new JButton("Edit");
                 Edit.addActionListener(new ActionListener() {
@@ -510,7 +517,6 @@ public class OrderMenu extends JFrame {
                                 productInvQntyTxt.setText("");
                         }
                 });
-
                 Edit.setBounds(404, 455, 89, 23);
                 inventory.add(Edit);
 
