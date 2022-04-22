@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableModel;
 
+import model.CartItem;
 import model.Product;
 import model.User;
 import net.proteanit.sql.DbUtils;
@@ -20,13 +21,14 @@ public class DataBaseController {
     Connection connection;
     PreparedStatement pst;
     ResultSet rs;
+    int bill;
 
     public Connection Connect() {
 
         try {
             String jdbcURL = "jdbc:mysql://localhost:3306/onlineshop";
-            String username = "Daedalus";
-            String password = "1Casiowatch";
+            String username = "root";
+            String password = "password";
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(jdbcURL, username, password);
             // JOptionPane.showMessageDialog(null, "Connected");
@@ -62,34 +64,80 @@ public class DataBaseController {
 
     }
 
-    public String cartUpdate(Connection con, Product product, int idInput, int qtyInput) {
 
+    public String cartUpdate (Connection con, Product product, int idInput, int qtyInput){
         try {
-            // get qty of product by item id
-            pst.executeQuery("Select product_qnty from product where product_id = " + idInput);
+           ResultSet rs = null;
+            rs = pst.executeQuery("Select * from product where product_id = " + idInput);
 
             while (rs.next()) {
-                // computes new stock value for item
-
+                String tempName = rs.getString("product_name");
+                Double tempPrice = rs.getDouble("product_price");
                 int stockUpdate = (rs.getInt("product_qnty")) - qtyInput;
 
-                // String prodUpdate = "Update product set product_qnty = "+ stockUpdate +"where
-                // product_id = "+idInput;
-                pst = con.prepareStatement(
-                        "update product set product_name= ?,product_price=?,product_qnty=? where product_id = "
-                                + idInput);
+                pst = con.prepareStatement("update product set product_name= ?,product_price=?,product_qnty=? where product_id = " + idInput);
 
-                // pst.executeUpdate(prodUpdate);
-                pst.setString(1, product.getProductName());
-                pst.setDouble(2, product.getPrice());
+                pst.setString(1, tempName);
+                pst.setDouble(2, tempPrice);
                 pst.setInt(3, stockUpdate);
-                pst.setInt(4, product.getProductId());
+ 
+                int k = pst.executeUpdate();
+            //     if (k == 1) {
+            //         JOptionPane.showMessageDialog(null, "Record Update");
+            //     } else {
+            //         JOptionPane.showMessageDialog(null, "Record not Updated");
+            //     }
             }
-
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
+                e.printStackTrace();
+            }
         return null;
+    }
+
+    public String returnQty (Connection con, Product product, int idInput, int qtyInput){
+        try {
+           ResultSet rs = null;
+            rs = pst.executeQuery("Select * from product where product_id = " + idInput);
+
+            while (rs.next()) {
+                String tempName = rs.getString("product_name");
+                Double tempPrice = rs.getDouble("product_price");
+                int stockUpdate = (rs.getInt("product_qnty")) + qtyInput;
+
+                pst = con.prepareStatement("update product set product_name= ?,product_price=?,product_qnty=? where product_id = " + idInput);
+
+                pst.setString(1, tempName);
+                pst.setDouble(2, tempPrice);
+                pst.setInt(3, stockUpdate);
+ 
+                int k = pst.executeUpdate();
+                if (k == 1) {
+                    JOptionPane.showMessageDialog(null, "Record Update");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Record not Updated");
+                }
+            }
+        } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        return null;
+    }
+
+    public CartItem returnCartItem (Connection con, CartItem item, int idInput, int qtyInput){
+        CartItem i1 = new CartItem();
+        ResultSet rs = null;
+        try{
+            rs = pst.executeQuery("Select * from product where product_id = " + idInput);
+            while (rs.next()) {
+                item.setProductId(rs.getInt("product_id"));
+                item.setProductName(rs.getString("product_name"));
+                item.setProductPrice(rs.getDouble("product_price"));
+                item.setProductQty(qtyInput);
+            }
+        } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        return i1;
     }
 
     public String prepUpdate(Connection con, Product product) {
@@ -154,6 +202,7 @@ public class DataBaseController {
             e.printStackTrace();
         }
         return DbUtils.resultSetToTableModel(rs);
+
     }
 
     public Product prepSearch(Connection con, Product product) {

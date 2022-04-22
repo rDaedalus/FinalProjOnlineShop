@@ -6,12 +6,9 @@ public class CartItem {
     Double productPrice;
     int productQty;
 
-    public CartItem(int productId, String productName, Double productPrice, int productQty) {
-        this.productId = productId;
-		this.productName = productName;
-		this.productPrice = productPrice;
-        this.productQty = productQty;
-	}
+    public CartItem(){
+
+    }
 
 	public int getProductId() {
 		return productId;

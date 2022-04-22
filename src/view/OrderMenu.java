@@ -35,8 +35,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import controller.DataBaseController;
+import model.CartItem;
 import model.Product;
 import view.CustomerService.Help;
 
@@ -53,6 +55,9 @@ public class OrderMenu extends JFrame {
         DataBaseController dbControl = new DataBaseController();
         private JPanel contentPane;
         JFrame frame = new JFrame("GUI");
+
+        double bill=0;
+
         // public static void main(String[] args) {
 
         // // connectDb();
@@ -162,30 +167,31 @@ public class OrderMenu extends JFrame {
                 tbl_inventory.setForeground(new Color(255, 255, 255));
                 tbl_inventory.setBackground(new Color(51, 51, 51));
                 tbl_inventory.getTableHeader().setReorderingAllowed(false);
-                tbl_inventory.setModel(new DefaultTableModel(
-                	new Object[][] {
-                		{new Integer(1), "Logitech H151 Headset", new Double(750.0), new Integer(10)},
-                		{new Integer(4), "Thermaltake UX 100 ARGB ", new Double(950.0), new Integer(3)},
-                		{new Integer(5), "Razer Seiren Mini Streaming Microphone", new Double(2400.0), new Integer(10)},
-                		{new Integer(6), "Logitech G604 Hero Wireless Gaming Mouse", new Double(4250.0), new Integer(10)},
-                		{new Integer(7), "Logitech Z313 2.1 Speaker And Subwoofer", new Double(1700.0), new Integer(6)},
-                		{new Integer(8), "Razer Huntsman Mini Purple", new Double(3995.0), new Integer(9)},
-                		{new Integer(9), "Seagate 1TB Slim Red HDD", new Double(2100.0), new Integer(7)},
-                		{new Integer(10), "Canon G3010 Wireless 3in1 CIS Printer", new Double(10550.0), new Integer(4)},
-                		{new Integer(11), "Rapoo C280 USB 2.0 Rotatable Webcam", new Double(1650.0), new Integer(3)},
-                		{new Integer(12), "Wanbo X1 LCD Projector", new Double(11535.0), new Integer(6)},
-                	},
-                	new String[] {
-                		"product_id", "product_name", "product_price", "product_qnty"
-                	}
-                ) {
-                	boolean[] columnEditables = new boolean[] {
-                		false, false, false, false
-                	};
-                	public boolean isCellEditable(int row, int column) {
-                		return columnEditables[column];
-                	}
-                });
+                tbl_inventory.setModel(dbControl.table_load(connection));
+                // tbl_inventory.setModel(new DefaultTableModel(
+                // 	new Object[][] {
+                // 		{new Integer(1), "Logitech H151 Headset", new Double(750.0), new Integer(10)},
+                // 		{new Integer(4), "Thermaltake UX 100 ARGB ", new Double(950.0), new Integer(3)},
+                // 		{new Integer(5), "Razer Seiren Mini Streaming Microphone", new Double(2400.0), new Integer(10)},
+                // 		{new Integer(6), "Logitech G604 Hero Wireless Gaming Mouse", new Double(4250.0), new Integer(10)},
+                // 		{new Integer(7), "Logitech Z313 2.1 Speaker And Subwoofer", new Double(1700.0), new Integer(6)},
+                // 		{new Integer(8), "Razer Huntsman Mini Purple", new Double(3995.0), new Integer(9)},
+                // 		{new Integer(9), "Seagate 1TB Slim Red HDD", new Double(2100.0), new Integer(7)},
+                // 		{new Integer(10), "Canon G3010 Wireless 3in1 CIS Printer", new Double(10550.0), new Integer(4)},
+                // 		{new Integer(11), "Rapoo C280 USB 2.0 Rotatable Webcam", new Double(1650.0), new Integer(3)},
+                // 		{new Integer(12), "Wanbo X1 LCD Projector", new Double(11535.0), new Integer(6)},
+                // 	},
+                // 	new String[] {
+                // 		"product_id", "product_name", "product_price", "product_qnty"
+                // 	}
+                // ) {
+                // 	boolean[] columnEditables = new boolean[] {
+                // 		false, false, false, false
+                // 	};
+                // 	public boolean isCellEditable(int row, int column) {
+                // 		return columnEditables[column];
+                // 	}
+                // });
                 tbl_inventory.getColumnModel().getColumn(0).setResizable(false);
                 tbl_inventory.getColumnModel().getColumn(0).setMinWidth(50);
                 tbl_inventory.getColumnModel().getColumn(1).setResizable(false);
@@ -251,26 +257,11 @@ public class OrderMenu extends JFrame {
                 tbl_cart.setForeground(new Color(255, 255, 255));
                 tbl_cart.setBackground(new Color(51, 51, 51));
                 tbl_cart.getTableHeader().setReorderingAllowed(false);
-                tbl_inventory.setModel(dbControl.table_load(connection));
+                tbl_cart.setModel(dbControl.table_load(connection));
                 tbl_cart.setModel(new DefaultTableModel(
-                	new String[][] {
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                		{null, null, null, null},
-                	},
+                	new String[][] {},
                 	new String[] {
-                		"ID", "Product Name", "Quantity", "Price"
+                		"ID", "Product Name", "Price", "Quantity"
                 	}
                 ) {
                 	Class[] columnTypes = new Class[] {
@@ -299,17 +290,42 @@ public class OrderMenu extends JFrame {
 
                 JButton btnConfirmOrder = new JButton("Confirm");
                 btnConfirmOrder.setBackground(new Color(0, 204, 255));
-                btnConfirmOrder.addActionListener(new ActionListener() {
+                
+                btnConfirmOrder.addActionListener(new ActionListener() {  
                         public void actionPerformed(ActionEvent e) {
                                 int spinValue = (Integer)spin_qty.getValue();
                                 int idValue = Integer.parseInt(txt_addId.getText());
-
-                                Product product = new Product();
                                 
-                                dbControl.cartUpdate(connection, product, idValue, spinValue);
+                                CartItem item = new CartItem();
+                                dbControl.returnCartItem(connection, item, idValue, spinValue);
 
-                                // tbl_cart.add(new Object[][]{new Integer(product.getProductId()), , , });
-                        }   
+                                try{
+                                        //update product quantity in inventory
+                                        Product product = new Product();
+                                        dbControl.cartUpdate(connection, product, idValue, spinValue);
+
+                                        tbl_inventory.setModel(dbControl.table_load(connection));
+                                        productIDtxt.setText("");
+        				productNameTxt.setText("");
+        				productPriceInvTxt.setText("");
+        				productInvQntyTxt.setText("");
+
+                                        //update details in inventory
+                                        table.setModel(dbControl.table_load(connection));
+                                }catch(NumberFormatException ex){
+                                        JOptionPane.showMessageDialog(frame, "Empty ID field. Please enter an item ID.");
+                                }
+
+                                //add new row to cart displaying product details
+                                DefaultTableModel cartModel = (DefaultTableModel) tbl_cart.getModel();
+                                cartModel.addRow(new Object[]{item.getProductId(),item.getProductName(),item.getProductPrice()*spinValue,item.getProductQty()});
+
+                                // for(int i=0;i<tbl_cart.getRowCount();i++){
+                                        
+                                //         double Amount = Double.parseDouble((String) tbl_cart.getValueAt(i, 2));
+                                //         bill += Amount;
+                                // }
+                        } 
                 });
                 GridBagConstraints gbc_btnConfirmOrder = new GridBagConstraints();
                 gbc_btnConfirmOrder.insets = new Insets(0, 0, 5, 5);
@@ -322,10 +338,28 @@ public class OrderMenu extends JFrame {
                 btnDelete.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                                 DefaultTableModel tblModel = (DefaultTableModel) tbl_cart.getModel();
-                                // delete row
+
+                                int row = tbl_cart.getSelectedRow();
+                                int spinValue = (int) tbl_cart.getModel().getValueAt(row, 3);
+                                int idValue = (int) tbl_cart.getModel().getValueAt(row, 0);
+
+                                // deletes row
                                 if (tbl_cart.getSelectedRowCount() == 1) {
+                                        //update product qty in inventory when removed from cart
+                                        Product product = new Product();
+                                        dbControl.returnQty(connection, product, idValue, spinValue);
+
+                                        tbl_inventory.setModel(dbControl.table_load(connection));
+                                        productIDtxt.setText("");
+        				productNameTxt.setText("");
+        				productPriceInvTxt.setText("");
+        				productInvQntyTxt.setText("");
+
                                         // if single row is selected then delete
                                         tblModel.removeRow(tbl_cart.getSelectedRow());
+
+                                        //update details in inventory
+                                        table.setModel(dbControl.table_load(connection));
                                 } else {
                                         if (tbl_cart.getRowCount() == 0) {
                                                 // if table is empty then display:
@@ -336,6 +370,9 @@ public class OrderMenu extends JFrame {
                                                                 "Please select a single row to delete");
                                         }
                                 }
+
+                                
+                                // int Bill = Integer.parseInt(tbl_cart.getValueAt())
                         }
                 });
                 GridBagConstraints gbc_btnDelete = new GridBagConstraints();
@@ -344,34 +381,17 @@ public class OrderMenu extends JFrame {
                 gbc_btnDelete.gridy = 4;
                 order_payment.add(btnDelete, gbc_btnDelete);
 
-                                // String query = "Select * from product where product_id = " + idInput;
-                                // ps = pst.executeQuery(query);
+                
 
-                                // //update item stock after adding to cart
-                                // try{
-                                // while(rs.next()){
-                                // int stockUpdate = (rs.getInt("product_qnty")) - qtyInput;
-                                // String prodUpdate = "Update product set product_qnty = "+ stockUpdate +"where
-                                // product_id = "+idInput;
-                                // }
-                                // pst.executeUpdate(prodUpdate);
-                                // }catch(SQLException e1){
-                                // e1.printStackTrace;
-                                // }
 
-                                // //add item details to cart
-                                // try{
-                                // while(rs.next()){
-                                // int id = rs.getInt("product_id");
-                                // String name = rs.getString("product_name");
-                                // int qty = qtyInput;
-                                // int price = (rs.getInt("product_price")) * qty;
-                                // tbl_cart.addRow(new Object[][]{id, name, qty, price});
-                                // }
-                                // }catch(SQLException e1){
-                                // e1.printStackTrace;
-                                // }
-
+                JLabel lblTotalBill = new JLabel("TOTAL: " + bill);
+                lblTotalBill.setHorizontalAlignment(SwingConstants.LEFT);
+                lblTotalBill.setForeground(Color.WHITE);
+                GridBagConstraints gbc_lblTotalBill = new GridBagConstraints();
+                gbc_lblTotalBill.insets = new Insets(0, 0, 5, 5);
+                gbc_lblTotalBill.gridx = 1;
+                gbc_lblTotalBill.gridy = 5;
+                order_payment.add(lblTotalBill, gbc_lblTotalBill);
 
                 JButton btnPromos = new JButton("Promos");
                 btnPromos.setBackground(new Color(0, 204, 255));
