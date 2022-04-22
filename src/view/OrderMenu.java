@@ -56,7 +56,7 @@ public class OrderMenu extends JFrame {
         private JPanel contentPane;
         JFrame frame = new JFrame("GUI");
 
-        double bill=0;
+        protected double bill=0;
 
         // public static void main(String[] args) {
 
@@ -142,10 +142,7 @@ public class OrderMenu extends JFrame {
                 btnNewButton.addActionListener(new ActionListener() {
                 	public void actionPerformed(ActionEvent e) {
                 	Help h = new Help();
-                	h.setVisible(true);
-                		
-                		
-                		
+                	h.setVisible(true);	
                 	}
                 });
                 GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
@@ -192,15 +189,15 @@ public class OrderMenu extends JFrame {
                 // 		return columnEditables[column];
                 // 	}
                 // });
-                tbl_inventory.getColumnModel().getColumn(0).setResizable(false);
-                tbl_inventory.getColumnModel().getColumn(0).setMinWidth(50);
-                tbl_inventory.getColumnModel().getColumn(1).setResizable(false);
-                tbl_inventory.getColumnModel().getColumn(1).setPreferredWidth(100);
-                tbl_inventory.getColumnModel().getColumn(1).setMinWidth(100);
-                tbl_inventory.getColumnModel().getColumn(2).setResizable(false);
-                tbl_inventory.getColumnModel().getColumn(2).setMinWidth(50);
-                tbl_inventory.getColumnModel().getColumn(3).setResizable(false);
-                tbl_inventory.getColumnModel().getColumn(3).setMinWidth(60);
+                // tbl_inventory.getColumnModel().getColumn(0).setResizable(false);
+                // tbl_inventory.getColumnModel().getColumn(0).setMinWidth(50);
+                // tbl_inventory.getColumnModel().getColumn(1).setResizable(false);
+                // tbl_inventory.getColumnModel().getColumn(1).setPreferredWidth(100);
+                // tbl_inventory.getColumnModel().getColumn(1).setMinWidth(100);
+                // tbl_inventory.getColumnModel().getColumn(2).setResizable(false);
+                // tbl_inventory.getColumnModel().getColumn(2).setMinWidth(50);
+                // tbl_inventory.getColumnModel().getColumn(3).setResizable(false);
+                // tbl_inventory.getColumnModel().getColumn(3).setMinWidth(60);
                 pane_inventory.setViewportView(tbl_inventory);
 
                 JLabel lblNewLabel = new JLabel("Add Item(ID):");
@@ -230,8 +227,6 @@ public class OrderMenu extends JFrame {
                 gbc_spin_qty.gridx = 4;
                 gbc_spin_qty.gridy = 1;
                 order_payment.add(spin_qty, gbc_spin_qty);
-
-                
 
                 JLabel lblNewLabel_11 = new JLabel("My Cart");
                 lblNewLabel_11.setForeground(new Color(0, 204, 255));
@@ -291,40 +286,48 @@ public class OrderMenu extends JFrame {
                 JButton btnConfirmOrder = new JButton("Confirm");
                 btnConfirmOrder.setBackground(new Color(0, 204, 255));
                 
+
+                JLabel lblTotalBill = new JLabel("TOTAL: P0.0");
+                lblTotalBill.setHorizontalAlignment(SwingConstants.LEFT);
+                lblTotalBill.setForeground(Color.WHITE);
+                GridBagConstraints gbc_lblTotalBill = new GridBagConstraints();
+                gbc_lblTotalBill.insets = new Insets(0, 0, 5, 5);
+                gbc_lblTotalBill.gridx = 1;
+                gbc_lblTotalBill.gridy = 5;
+                order_payment.add(lblTotalBill, gbc_lblTotalBill);
+
                 btnConfirmOrder.addActionListener(new ActionListener() {  
                         public void actionPerformed(ActionEvent e) {
+                                try{
                                 int spinValue = (Integer)spin_qty.getValue();
                                 int idValue = Integer.parseInt(txt_addId.getText());
-                                
                                 CartItem item = new CartItem();
                                 dbControl.returnCartItem(connection, item, idValue, spinValue);
-
-                                try{
                                         //update product quantity in inventory
                                         Product product = new Product();
-                                        dbControl.cartUpdate(connection, product, idValue, spinValue);
-
-                                        tbl_inventory.setModel(dbControl.table_load(connection));
-                                        productIDtxt.setText("");
-        				productNameTxt.setText("");
-        				productPriceInvTxt.setText("");
-        				productInvQntyTxt.setText("");
-
-                                        //update details in inventory
-                                        table.setModel(dbControl.table_load(connection));
+                                        try{
+                                                dbControl.cartUpdate(connection, product, idValue, spinValue);
+                                                tbl_inventory.setModel(dbControl.table_load(connection));
+                                                productIDtxt.setText("");
+                                                productNameTxt.setText("");
+                                                productPriceInvTxt.setText("");
+                                                productInvQntyTxt.setText("");
+                                                //update details in inventory
+                                                table.setModel(dbControl.table_load(connection));
+                                                //add new row to cart displaying product details
+                                                DefaultTableModel cartModel = (DefaultTableModel) tbl_cart.getModel();
+                                                cartModel.addRow(new Object[]{item.getProductId(),item.getProductName(),item.getProductPrice()*spinValue,item.getProductQty()});
+                                                
+                                                bill = dbControl.getSum(tbl_cart.getModel());
+                                                lblTotalBill.setText("TOTAL: " + bill);
+                                                // item.setTotalPrice(dbControl.getSum(tbl_cart.getModel()));
+                                                // lblTotalBill.setText("TOTAL: P" + item.getTotalPrice());
+                                        }catch(Exception e1){
+                                                e1.printStackTrace();
+                                        }
                                 }catch(NumberFormatException ex){
                                         JOptionPane.showMessageDialog(frame, "Empty ID field. Please enter an item ID.");
                                 }
-
-                                //add new row to cart displaying product details
-                                DefaultTableModel cartModel = (DefaultTableModel) tbl_cart.getModel();
-                                cartModel.addRow(new Object[]{item.getProductId(),item.getProductName(),item.getProductPrice()*spinValue,item.getProductQty()});
-
-                                // for(int i=0;i<tbl_cart.getRowCount();i++){
-                                        
-                                //         double Amount = Double.parseDouble((String) tbl_cart.getValueAt(i, 2));
-                                //         bill += Amount;
-                                // }
                         } 
                 });
                 GridBagConstraints gbc_btnConfirmOrder = new GridBagConstraints();
@@ -338,26 +341,21 @@ public class OrderMenu extends JFrame {
                 btnDelete.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                                 DefaultTableModel tblModel = (DefaultTableModel) tbl_cart.getModel();
-
                                 int row = tbl_cart.getSelectedRow();
                                 int spinValue = (int) tbl_cart.getModel().getValueAt(row, 3);
                                 int idValue = (int) tbl_cart.getModel().getValueAt(row, 0);
-
+                                CartItem item = new CartItem();
                                 // deletes row
                                 if (tbl_cart.getSelectedRowCount() == 1) {
                                         //update product qty in inventory when removed from cart
-                                        Product product = new Product();
-                                        dbControl.returnQty(connection, product, idValue, spinValue);
-
+                                        dbControl.returnQty(connection, item, idValue, spinValue);
                                         tbl_inventory.setModel(dbControl.table_load(connection));
                                         productIDtxt.setText("");
         				productNameTxt.setText("");
         				productPriceInvTxt.setText("");
         				productInvQntyTxt.setText("");
-
                                         // if single row is selected then delete
                                         tblModel.removeRow(tbl_cart.getSelectedRow());
-
                                         //update details in inventory
                                         table.setModel(dbControl.table_load(connection));
                                 } else {
@@ -370,9 +368,10 @@ public class OrderMenu extends JFrame {
                                                                 "Please select a single row to delete");
                                         }
                                 }
-
-                                
-                                // int Bill = Integer.parseInt(tbl_cart.getValueAt())
+                                bill = dbControl.getSum(tbl_cart.getModel());
+                                lblTotalBill.setText("TOTAL: " + bill);
+                                // item.setTotalPrice(dbControl.getSum(tbl_cart.getModel()));
+                                // lblTotalBill.setText("TOTAL: P" + item.getTotalPrice());
                         }
                 });
                 GridBagConstraints gbc_btnDelete = new GridBagConstraints();
@@ -380,18 +379,7 @@ public class OrderMenu extends JFrame {
                 gbc_btnDelete.gridx = 2;
                 gbc_btnDelete.gridy = 4;
                 order_payment.add(btnDelete, gbc_btnDelete);
-
                 
-
-
-                JLabel lblTotalBill = new JLabel("TOTAL: " + bill);
-                lblTotalBill.setHorizontalAlignment(SwingConstants.LEFT);
-                lblTotalBill.setForeground(Color.WHITE);
-                GridBagConstraints gbc_lblTotalBill = new GridBagConstraints();
-                gbc_lblTotalBill.insets = new Insets(0, 0, 5, 5);
-                gbc_lblTotalBill.gridx = 1;
-                gbc_lblTotalBill.gridy = 5;
-                order_payment.add(lblTotalBill, gbc_lblTotalBill);
 
                 JButton btnPromos = new JButton("Promos");
                 btnPromos.setBackground(new Color(0, 204, 255));
@@ -423,9 +411,9 @@ public class OrderMenu extends JFrame {
             				dbControl.prepAdd(connection, product);
             				table.setModel(dbControl.table_load(connection));
             			
-            				 productNameTxt.setText("");
-            				 productPriceInvTxt.setText("");
-            				 productInvQntyTxt.setText("");
+            				productNameTxt.setText("");
+            				productPriceInvTxt.setText("");
+            				productInvQntyTxt.setText("");
                         }
                 });
                 

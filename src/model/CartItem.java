@@ -3,8 +3,9 @@ package model;
 public class CartItem {
     int productId;
     String productName;
-    Double productPrice;
+    double productPrice;
     int productQty;
+    double totalPrice;
 
     public CartItem(){
 
@@ -26,7 +27,7 @@ public class CartItem {
 		this.productName = productName;
 	}
 
-	public Double getProductPrice() {
+	public double getProductPrice() {
 		return productPrice;
 	}
 
@@ -41,4 +42,12 @@ public class CartItem {
 	public void setProductQty(int productQty) {
 		this.productQty = productQty;
 	}
+
+    public double getTotalPrice(){
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice){
+        this.totalPrice = totalPrice;
+    }
 }
