@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -12,6 +13,7 @@ import javax.swing.table.TableModel;
 
 import model.CartItem;
 import model.Product;
+import model.ShippingDetails;
 import model.User;
 import net.proteanit.sql.DbUtils;
 import view.LoginPage;
@@ -28,8 +30,8 @@ public class DataBaseController {
 
         try {
             String jdbcURL = "jdbc:mysql://localhost:3306/onlineshop";
-            String username = "root";
-            String password = "password";
+            String username = "Daedalus";
+            String password = "1Casiowatch";
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(jdbcURL, username, password);
             // JOptionPane.showMessageDialog(null, "Connected");
@@ -60,22 +62,23 @@ public class DataBaseController {
         return null;
     }
 
-
-    public String cartUpdate (Connection con, Product product, int idInput, int qtyInput) throws Exception{
+    public String cartUpdate(Connection con, Product product, int idInput, int qtyInput) throws Exception {
         try {
-           ResultSet rs = null;
+            ResultSet rs = null;
             rs = pst.executeQuery("Select * from product where product_id = " + idInput);
 
             while (rs.next()) {
                 String tempName = rs.getString("product_name");
                 Double tempPrice = rs.getDouble("product_price");
 
-                if(qtyInput > rs.getInt("product_qnty")){
+                if (qtyInput > rs.getInt("product_qnty")) {
                     JOptionPane.showMessageDialog(null, "Out of Stock. Please enter a quantity value less than stock!");
                     throw new Exception();
-                }else{
+                } else {
                     int stockUpdate = (rs.getInt("product_qnty")) - qtyInput;
-                    pst = con.prepareStatement("update product set product_name= ?,product_price=?,product_qnty=? where product_id = " + idInput);
+                    pst = con.prepareStatement(
+                            "update product set product_name= ?,product_price=?,product_qnty=? where product_id = "
+                                    + idInput);
                     pst.setString(1, tempName);
                     pst.setDouble(2, tempPrice);
                     pst.setInt(3, stockUpdate);
@@ -88,16 +91,18 @@ public class DataBaseController {
         return null;
     }
 
-    public String returnQty (Connection con, CartItem product, int idInput, int qtyInput){
+    public String returnQty(Connection con, CartItem product, int idInput, int qtyInput) {
         try {
-           ResultSet rs = null;
+            ResultSet rs = null;
             rs = pst.executeQuery("Select * from product where product_id = " + idInput);
 
             while (rs.next()) {
                 String tempName = rs.getString("product_name");
                 Double tempPrice = rs.getDouble("product_price");
                 int stockUpdate = (rs.getInt("product_qnty")) + qtyInput;
-                pst = con.prepareStatement("update product set product_name= ?,product_price=?,product_qnty=? where product_id = " + idInput);
+                pst = con.prepareStatement(
+                        "update product set product_name= ?,product_price=?,product_qnty=? where product_id = "
+                                + idInput);
                 pst.setString(1, tempName);
                 pst.setDouble(2, tempPrice);
                 pst.setInt(3, stockUpdate);
@@ -109,18 +114,18 @@ public class DataBaseController {
         return null;
     }
 
-    public double getSum(TableModel table){
+    public double getSum(TableModel table) {
         double sum = 0;
-        for(int i = 0; i < table.getRowCount(); i++){
+        for (int i = 0; i < table.getRowCount(); i++) {
             sum = sum + Double.parseDouble(table.getValueAt(i, 2).toString());
         }
         return sum;
     }
 
-    public CartItem returnCartItem (Connection con, CartItem item, int idInput, int qtyInput){
+    public CartItem returnCartItem(Connection con, CartItem item, int idInput, int qtyInput) {
         CartItem i1 = new CartItem();
         ResultSet rs = null;
-        try{
+        try {
             rs = pst.executeQuery("Select * from product where product_id = " + idInput);
             while (rs.next()) {
                 item.setProductId(rs.getInt("product_id"));
@@ -129,8 +134,8 @@ public class DataBaseController {
                 item.setProductQty(qtyInput);
             }
         } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
+        }
         return i1;
     }
 
@@ -246,6 +251,32 @@ public class DataBaseController {
         }
         return null;
 
+    }
+
+    public String addShipDetails(Connection con, ShippingDetails shipDetails) {
+        try {
+
+            pst = con.prepareStatement(
+                    "insert into shipping(lastname,firstname,streetaddress,city,province,zipcode,phonenumber,email)values(?,?,?,?,?,?,?,?)");
+            pst.setString(1, shipDetails.getFirstName());
+            pst.setString(2, shipDetails.getLastName());
+            pst.setString(3, shipDetails.getAddress());
+            pst.setString(4, shipDetails.getCity());
+            pst.setString(5, shipDetails.getProvince());
+            pst.setString(6, shipDetails.getZipcode());
+            pst.setString(7, shipDetails.getPhonenumber());
+            pst.setString(8, shipDetails.getEmail());
+            int k = pst.executeUpdate();
+
+            if (k == 1) {
+                JOptionPane.showMessageDialog(null, "Shipping Addedd");
+            } else {
+                JOptionPane.showMessageDialog(null, "Shipping Details Existing");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
     }
 
 }
