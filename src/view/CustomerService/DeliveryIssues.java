@@ -6,10 +6,15 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import controller.DataBaseController;
+import model.Complain;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -19,6 +24,8 @@ import java.awt.SystemColor;
 import javax.swing.ImageIcon;
 
 public class DeliveryIssues extends JFrame {
+	Connection connection = null;
+	DataBaseController dbControl = new DataBaseController();
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -31,7 +38,8 @@ public class DeliveryIssues extends JFrame {
 	 * Create the frame.
 	 */
 	public DeliveryIssues() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		connection = dbControl.Connect();
+
 		setBounds(100, 100, 547, 651);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
@@ -57,27 +65,31 @@ public class DeliveryIssues extends JFrame {
 		lblConcern.setBounds(20, 300, 127, 19);
 		contentPane.add(lblConcern);
 
+		JTextPane textPane = new JTextPane();
+		textPane.setBackground(Color.LIGHT_GRAY);
+		textPane.setBounds(20, 361, 319, 134);
+		contentPane.add(textPane);
+
 		JLabel lblNewLabel_1 = new JLabel("");
 		lblNewLabel_1.setBackground(Color.WHITE);
 		lblNewLabel_1.setBounds(10, 510, 250, 80);
 		contentPane.add(lblNewLabel_1);
 
 		JButton btnNewButton = new JButton("");
-		btnNewButton.setIcon(new ImageIcon("E:\\Downloads\\submit iconz.PNG"));
+		btnNewButton.setIcon(new ImageIcon("assets\\submit iconz.PNG"));
 		btnNewButton.setBackground(Color.WHITE);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Complain c = new Complain();
 				lblNewLabel_1.setText(
 						"<html>We're sorry you got a devlivery issues. In the name of my firm, I apologize for any inconvenience. <br/> In order to avoid faulty products, we will do our best to solve this problem.</html>");
+				c.setCustomerId(Integer.parseInt(textField.getText()));
+				c.setCustomerConcern(textPane.getText());
+				dbControl.prepAddComplain(connection, c);
 			}
 		});
 		btnNewButton.setBounds(396, 552, 98, 38);
 		contentPane.add(btnNewButton);
-
-		JTextPane textPane = new JTextPane();
-		textPane.setBackground(Color.LIGHT_GRAY);
-		textPane.setBounds(20, 361, 319, 134);
-		contentPane.add(textPane);
 
 		JLabel lblNewLabel_3 = new JLabel("Customer Service");
 		lblNewLabel_3.setForeground(new Color(0, 0, 128));
@@ -87,12 +99,12 @@ public class DeliveryIssues extends JFrame {
 		contentPane.add(lblNewLabel_3);
 
 		JLabel lblNewLabel_2 = new JLabel("");
-		lblNewLabel_2.setIcon(new ImageIcon("E:\\Downloads\\icon oshopp.png"));
+		lblNewLabel_2.setIcon(new ImageIcon("assets\\icon oshopp.png"));
 		lblNewLabel_2.setBounds(10, 0, 74, 69);
 		contentPane.add(lblNewLabel_2);
 
 		JLabel lblNewLabel_4 = new JLabel("New label");
-		lblNewLabel_4.setIcon(new ImageIcon("E:\\Downloads\\backgroud oshopping.jpg"));
+		lblNewLabel_4.setIcon(new ImageIcon("assets\\backgroud oshopping.jpg"));
 		lblNewLabel_4.setBounds(-159, 83, 689, 74);
 		contentPane.add(lblNewLabel_4);
 
@@ -110,7 +122,7 @@ public class DeliveryIssues extends JFrame {
 
 		JLabel lblNewLabel_6 = new JLabel(
 				"You can only change the courier once and the change is only allowed for Standard Options only.");
-		lblNewLabel_6.setIcon(new ImageIcon("E:\\Downloads\\note icon.PNG"));
+		lblNewLabel_6.setIcon(new ImageIcon("assets\\note icon.PNG"));
 		lblNewLabel_6.setBounds(10, 193, 508, 28);
 		contentPane.add(lblNewLabel_6);
 

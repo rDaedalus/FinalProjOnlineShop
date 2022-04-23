@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
 import model.CartItem;
+import model.Complain;
 import model.Product;
 import model.ShippingDetails;
 import model.User;
@@ -28,8 +29,8 @@ public class DataBaseController {
     public Connection Connect() {
         try {
             String jdbcURL = "jdbc:mysql://localhost:3306/onlineshop";
-            String username = "root";
-            String password = "password";
+            String username = "Daedalus";
+            String password = "1Casiowatch";
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(jdbcURL, username, password);
             // JOptionPane.showMessageDialog(null, "Connected");
@@ -58,7 +59,7 @@ public class DataBaseController {
         return null;
     }
 
-    public double discountedBill(Connection con, double bill, double discount){
+    public double discountedBill(Connection con, double bill, double discount) {
         double discountVal = discount * bill;
         double promoPrice = bill - discountVal;
         return promoPrice;
@@ -277,6 +278,25 @@ public class DataBaseController {
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
+
+    public String prepAddComplain(Connection con, Complain complain) {
+        try {
+
+            pst = con.prepareStatement("insert into complains(customerid,customercomplain)values(?,?)");
+            pst.setInt(1, complain.getCustomerId());
+            pst.setString(2, complain.getCustomerConcern());
+            int k = pst.executeUpdate();
+
+            if (k == 1) {
+                JOptionPane.showMessageDialog(null, "Complain Submitted");
+            } else {
+                JOptionPane.showMessageDialog(null, "Complain Submitted");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }

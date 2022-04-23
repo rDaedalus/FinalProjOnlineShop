@@ -1,15 +1,14 @@
 package model;
 
-public class Customercomplain {
+public class Complain {
 	private int customerId;
 	private String customerConcern;
 
-	public Customercomplain() {
+	public Complain() {
 
 	}
 
-	public Customercomplain(int customerId, String customerConcern) {
-
+	public Complain(int customerId, String customerConcern) {
 		this.customerId = customerId;
 		this.customerConcern = customerConcern;
 	}
@@ -18,12 +17,12 @@ public class Customercomplain {
 		return customerId;
 	}
 
-	public String getCustomerConcern() {
-		return customerConcern;
-	}
-
 	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
+	}
+
+	public String getCustomerConcern() {
+		return customerConcern;
 	}
 
 	public void setCustomerConcern(String customerConcern) {

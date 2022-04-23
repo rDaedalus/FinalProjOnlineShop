@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.TableModel;
 
 import controller.DataBaseController;
 import model.ShippingDetails;
@@ -42,13 +43,13 @@ public class Ship extends javax.swing.JFrame {
 	Connection connection = null;
 	DataBaseController dbControl = new DataBaseController();
 
-	public Ship() {
+	public Ship(TableModel cModel) {
 		connection = dbControl.Connect();
 		setTitle("Shipping Form");
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(
-                "assets\\icon.png"));
-		
+				"assets\\icon.png"));
+
 		setBounds(100, 100, 552, 690);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(51, 51, 51));

@@ -10,6 +10,10 @@ import javax.swing.JSeparator;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
+import controller.DataBaseController;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JPanel;
@@ -19,6 +23,8 @@ import java.awt.Color;
 
 public class ShipConfirm extends javax.swing.JFrame {
 	private JTable table;
+	DataBaseController dbControl = new DataBaseController();
+	OrderMenu orderMenu = new OrderMenu();
 
 	/**
 	 * Launch the application.
@@ -106,12 +112,7 @@ public class ShipConfirm extends javax.swing.JFrame {
 		getContentPane().add(scrollPane);
 
 		table = new JTable();
-		table.setModel(new DefaultTableModel(
-				new Object[][] {
-				},
-				new String[] {
-						"Item", "Unit Price", "Quantity", "Item Subtotal"
-				}));
+
 		table.getColumnModel().getColumn(0).setPreferredWidth(275);
 		scrollPane.setViewportView(table);
 

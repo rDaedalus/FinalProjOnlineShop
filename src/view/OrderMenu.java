@@ -61,9 +61,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class OrderMenu extends JFrame {
-        
 
         Connection connection = null;
+
         DataBaseController dbControl = new DataBaseController();
         private JPanel contentPane;
         JFrame frame = new JFrame("GUI");
@@ -99,15 +99,14 @@ public class OrderMenu extends JFrame {
         private JTextField productNameTxt;
         private JTable table;
 
-
-        private void openPayment(){
+        private void openPayment(TableModel cModel) {
                 String[] options = { "OK" };
                 JPanel panel = new JPanel();
                 JLabel lbl = new JLabel("TOTAL: P" + bill + " Enter Payment");
                 JTextField txt = new JTextField(10);
                 panel.add(lbl);
                 panel.add(txt);
-        
+
                 JPanel panel2 = new JPanel();
                 JLabel lbl2 = new JLabel("Proceed To Shipping");
                 panel2.add(lbl2);
@@ -125,7 +124,8 @@ public class OrderMenu extends JFrame {
                                                 JOptionPane.QUESTION_MESSAGE, null, options,
                                                 options[0]);
                                 if (Option2 == 0) {
-                                        Ship s = new Ship();
+                                        Ship s = new Ship(cModel);
+
                                         s.setVisible(true);
                                 }
                         }
@@ -197,14 +197,14 @@ public class OrderMenu extends JFrame {
                 tbl_inventory.setBackground(new Color(51, 51, 51));
                 tbl_inventory.getTableHeader().setReorderingAllowed(false);
                 tbl_inventory.setModel(dbControl.table_load(connection));
-        
+
                 pane_inventory.setViewportView(tbl_inventory);
-                
-                                JLabel lblNewLabel = new JLabel("Add Item(ID):");
-                                lblNewLabel.setFont(new Font("Gadugi", Font.PLAIN, 14));
-                                lblNewLabel.setBounds(444, 103, 82, 14);
-                                lblNewLabel.setForeground(Color.WHITE);
-                                order_payment.add(lblNewLabel);
+
+                JLabel lblNewLabel = new JLabel("Add Item(ID):");
+                lblNewLabel.setFont(new Font("Gadugi", Font.PLAIN, 14));
+                lblNewLabel.setBounds(444, 103, 82, 14);
+                lblNewLabel.setForeground(Color.WHITE);
+                order_payment.add(lblNewLabel);
 
                 txt_addId = new JTextField();
                 txt_addId.setBounds(537, 102, 29, 20);
@@ -234,18 +234,18 @@ public class OrderMenu extends JFrame {
                 tbl_cart.setBackground(new Color(51, 51, 51));
                 tbl_cart.getTableHeader().setReorderingAllowed(false);
                 tbl_cart.setModel(new DefaultTableModel(
-                	new Object[][] {
-                	},
-                	new String[] {
-                		"ID", "Product Name", "Price", "Quantity"
-                	}
-                ) {
-                	Class[] columnTypes = new Class[] {
-                		Integer.class, String.class, Integer.class, Integer.class
-                	};
-                	public Class getColumnClass(int columnIndex) {
-                		return columnTypes[columnIndex];
-                	}
+                                new Object[][] {
+                                },
+                                new String[] {
+                                                "ID", "Product Name", "Price", "Quantity"
+                                }) {
+                        Class[] columnTypes = new Class[] {
+                                        Integer.class, String.class, Integer.class, Integer.class
+                        };
+
+                        public Class getColumnClass(int columnIndex) {
+                                return columnTypes[columnIndex];
+                        }
                 });
                 tbl_cart.getColumnModel().getColumn(0).setResizable(false);
                 tbl_cart.getColumnModel().getColumn(0).setPreferredWidth(50);
@@ -316,8 +316,8 @@ public class OrderMenu extends JFrame {
                                                                 item.getProductPrice() * spinValue,
                                                                 item.getProductQty() });
 
-
                                                 bill = dbControl.getSum(tbl_cart.getModel());
+
                                                 lblTotalBill.setText("TOTAL: P" + bill);
                                                 item.setTotalPrice(dbControl.getSum(tbl_cart.getModel()));
                                                 // lblTotalBill.setText("TOTAL: P" + item.getTotalPrice());
@@ -338,42 +338,43 @@ public class OrderMenu extends JFrame {
                 btnDelete.setBackground(new Color(0, 204, 255));
                 btnDelete.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                                try{
-                                DefaultTableModel tblModel = (DefaultTableModel) tbl_cart.getModel();
-                                int row = tbl_cart.getSelectedRow();
-                                int spinValue = (int) tbl_cart.getModel().getValueAt(row, 3);
-                                int idValue = (int) tbl_cart.getModel().getValueAt(row, 0);
-                                CartItem item = new CartItem();
+                                try {
+                                        DefaultTableModel tblModel = (DefaultTableModel) tbl_cart.getModel();
+                                        int row = tbl_cart.getSelectedRow();
+                                        int spinValue = (int) tbl_cart.getModel().getValueAt(row, 3);
+                                        int idValue = (int) tbl_cart.getModel().getValueAt(row, 0);
+                                        CartItem item = new CartItem();
 
-                                // deletes row
-                                if (tbl_cart.getSelectedRowCount() == 1) {
-                                        // update product qty in inventory when removed from cart
-                                        dbControl.returnQty(connection, item, idValue, spinValue);
-                                        tbl_inventory.setModel(dbControl.table_load(connection));
-                                        productIDtxt.setText("");
-                                        productNameTxt.setText("");
-                                        productPriceInvTxt.setText("");
-                                        productInvQntyTxt.setText("");
-                                        // if single row is selected then delete
-                                        tblModel.removeRow(tbl_cart.getSelectedRow());
-                                        // update details in inventory
-                                        table.setModel(dbControl.table_load(connection));
-                                } else {
-                                        if (tbl_cart.getRowCount() == 0) {
-                                                // if table is empty then display:
-                                                JOptionPane.showMessageDialog(frame, "Table is Empty.");
+                                        // deletes row
+                                        if (tbl_cart.getSelectedRowCount() == 1) {
+                                                // update product qty in inventory when removed from cart
+                                                dbControl.returnQty(connection, item, idValue, spinValue);
+                                                tbl_inventory.setModel(dbControl.table_load(connection));
+                                                productIDtxt.setText("");
+                                                productNameTxt.setText("");
+                                                productPriceInvTxt.setText("");
+                                                productInvQntyTxt.setText("");
+                                                // if single row is selected then delete
+                                                tblModel.removeRow(tbl_cart.getSelectedRow());
+                                                // update details in inventory
+                                                table.setModel(dbControl.table_load(connection));
                                         } else {
-                                                // if table is not empty but row is not selected/multiple rows selected
-                                                JOptionPane.showMessageDialog(frame,
-                                                                "Please select a single row to delete");
+                                                if (tbl_cart.getRowCount() == 0) {
+                                                        // if table is empty then display:
+                                                        JOptionPane.showMessageDialog(frame, "Table is Empty.");
+                                                } else {
+                                                        // if table is not empty but row is not selected/multiple rows
+                                                        // selected
+                                                        JOptionPane.showMessageDialog(frame,
+                                                                        "Please select a single row to delete");
+                                                }
                                         }
-                                }
-                                bill = dbControl.getSum(tbl_cart.getModel());
-                                lblTotalBill.setText("TOTAL: P" + bill);
-                                item.setTotalPrice(dbControl.getSum(tbl_cart.getModel()));
-                                // lblTotalBill.setText("TOTAL: P" + item.getTotalPrice());
-                                // bill = dbControl.saveTotal(item.getTotalPrice());
-                                }catch(ArrayIndexOutOfBoundsException ex){
+                                        bill = dbControl.getSum(tbl_cart.getModel());
+                                        lblTotalBill.setText("TOTAL: P" + bill);
+                                        item.setTotalPrice(dbControl.getSum(tbl_cart.getModel()));
+                                        // lblTotalBill.setText("TOTAL: P" + item.getTotalPrice());
+                                        // bill = dbControl.saveTotal(item.getTotalPrice());
+                                } catch (ArrayIndexOutOfBoundsException ex) {
                                         JOptionPane.showMessageDialog(null, "No items to remove");
                                 }
                         }
@@ -383,7 +384,7 @@ public class OrderMenu extends JFrame {
                 JButton btnPromos = new JButton("Payment");
                 btnPromos.setBounds(313, 513, 121, 33);
                 btnPromos.addActionListener(new ActionListener() {
-                	public void actionPerformed(ActionEvent e) {
+                        public void actionPerformed(ActionEvent e) {
                                 // lblTotalBill.setText("(DISCOUNTED) TOTAL: " + bill);
                                 // bill = dbControl.getSum(tbl_cart.getModel());
 
@@ -394,39 +395,43 @@ public class OrderMenu extends JFrame {
                                 try {
                                         int promoSelect = JOptionPane.showOptionDialog(null, promoPanel,
                                                         "Enter Your Payment", JOptionPane.OK_CANCEL_OPTION,
-                                                        JOptionPane.QUESTION_MESSAGE, null, promoOptions, promoOptions[0]);
+                                                        JOptionPane.QUESTION_MESSAGE, null, promoOptions,
+                                                        promoOptions[0]);
 
                                         if (promoSelect == 0) {
                                                 Promos promoPane = new Promos(bill);
-                                                promoPane.addWindowListener((WindowListener) new WindowAdapter(){
+                                                promoPane.addWindowListener((WindowListener) new WindowAdapter() {
                                                         @Override
-                                                        public void windowClosing(WindowEvent e1){
+                                                        public void windowClosing(WindowEvent e1) {
                                                                 bill = promoPane.getDiscountedBill();
                                                                 lblTotalBill.setText("TOTAL: P0.0");
-                                                                //clear cart table and price
-                                                                DefaultTableModel model = (DefaultTableModel)tbl_cart.getModel();
+                                                                // clear cart table and price
+                                                                DefaultTableModel model = (DefaultTableModel) tbl_cart
+                                                                                .getModel();
                                                                 model.setRowCount(0);
                                                                 // bill = dbControl.getSum(tbl_cart.getModel());
-                                                                openPayment();
+                                                                openPayment(tbl_cart
+                                                                                .getModel());
                                                         }
                                                 });
                                                 promoPane.setVisible(true);
-                                        }
-                                        else{
-                                                //clear cart table and price
+                                        } else {
+                                                // clear cart table and price
                                                 lblTotalBill.setText("TOTAL: P0.0");
-                                                DefaultTableModel model = (DefaultTableModel)tbl_cart.getModel();
+                                                DefaultTableModel model = (DefaultTableModel) tbl_cart.getModel();
                                                 model.setRowCount(0);
-                                                openPayment();
+                                                openPayment(tbl_cart
+                                                                .getModel());
                                         }
-                                }catch (Exception e1) {
+                                } catch (Exception e1) {
                                         JOptionPane.showMessageDialog(null, e1.getLocalizedMessage());
-                	}
-                }});
+                                }
+                        }
+                });
 
                 btnPromos.setBackground(new Color(0, 204, 255));
                 order_payment.add(btnPromos);
-                
+
                 JLabel lblQty = new JLabel("Qty:");
                 lblQty.setForeground(Color.WHITE);
                 lblQty.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -479,22 +484,21 @@ public class OrderMenu extends JFrame {
                 Edit.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
 
-                                        Product product = new Product();
-                                        product.setProductName(productNameTxt.getText());
-                                        product.setPrice(Integer.parseInt(productPriceInvTxt.getText()));
-                                        product.setQnty(Integer.parseInt(productInvQntyTxt.getText()));
-                                        product.setProductId(Integer.parseInt(
-                                                        productIDtxt.getText()));
-                                        dbControl.prepUpdate(connection, product);
-                                        table.setModel(dbControl.table_load(connection));
-                                        productIDtxt.setText("");
-                                        productNameTxt.setText("");
-                                        productPriceInvTxt.setText("");
-                                        productInvQntyTxt.setText("");
-        
-                                        tbl_inventory.setModel(dbControl.table_load(connection));
-                                
-                                
+                                Product product = new Product();
+                                product.setProductName(productNameTxt.getText());
+                                product.setPrice(Integer.parseInt(productPriceInvTxt.getText()));
+                                product.setQnty(Integer.parseInt(productInvQntyTxt.getText()));
+                                product.setProductId(Integer.parseInt(
+                                                productIDtxt.getText()));
+                                dbControl.prepUpdate(connection, product);
+                                table.setModel(dbControl.table_load(connection));
+                                productIDtxt.setText("");
+                                productNameTxt.setText("");
+                                productPriceInvTxt.setText("");
+                                productInvQntyTxt.setText("");
+
+                                tbl_inventory.setModel(dbControl.table_load(connection));
+
                         }
                 });
                 Edit.setBounds(400, 480, 89, 23);
@@ -566,8 +570,9 @@ public class OrderMenu extends JFrame {
                 table.setBorder(null);
                 scrollPane.setViewportView(table);
                 table.setModel(dbControl.table_load(connection));
-                
-                JLabel lblNewLabel_1 = new JLabel("<html>Search: Enter item ID to search<br><br>\r\n\r\nAdd: Enter Item attributes in the text fields<br><br>\r\n\r\nDelete: Enter item ID to delete<br><br>\r\n\r\nEdit: Enter item ID, then update other attributes</html>");
+
+                JLabel lblNewLabel_1 = new JLabel(
+                                "<html>Search: Enter item ID to search<br><br>\r\n\r\nAdd: Enter Item attributes in the text fields<br><br>\r\n\r\nDelete: Enter item ID to delete<br><br>\r\n\r\nEdit: Enter item ID, then update other attributes</html>");
                 lblNewLabel_1.setFont(new Font("Gadugi", Font.PLAIN, 11));
                 lblNewLabel_1.setBounds(414, 18, 183, 131);
                 inventory.add(lblNewLabel_1);

@@ -6,10 +6,15 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import controller.DataBaseController;
+import model.Complain;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -19,7 +24,8 @@ import java.awt.SystemColor;
 import javax.swing.ImageIcon;
 
 public class TechnicalErrors extends JFrame {
-
+	Connection connection = null;
+	DataBaseController dbControl = new DataBaseController();
 	private JPanel contentPane;
 	private JTextField textField;
 
@@ -31,7 +37,8 @@ public class TechnicalErrors extends JFrame {
 	 * Create the frame.
 	 */
 	public TechnicalErrors() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		connection = dbControl.Connect();
+
 		setBounds(100, 100, 552, 553);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
@@ -61,12 +68,16 @@ public class TechnicalErrors extends JFrame {
 		contentPane.add(lblNewLabel_1);
 
 		JButton btnNewButton = new JButton("");
-		btnNewButton.setIcon(new ImageIcon("E:\\Downloads\\submit iconz.PNG"));
+		btnNewButton.setIcon(new ImageIcon("assets\\submit iconz.PNG"));
 		btnNewButton.setBackground(Color.WHITE);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Complain c = new Complain();
 				lblNewLabel_1.setText(
 						"<html>We're sorry you got a technical errors. In the name of my firm, I apologize for any inconvenience. <br/> In order to avoid faulty products, we will do our best to solve this problem.</html>");
+				c.setCustomerId(Integer.parseInt(textField.getText()));
+				c.setCustomerConcern(textField.getText());
+				dbControl.prepAddComplain(connection, c);
 			}
 		});
 		btnNewButton.setBounds(414, 441, 97, 40);
@@ -80,12 +91,12 @@ public class TechnicalErrors extends JFrame {
 		contentPane.add(lblNewLabel_3);
 
 		JLabel lblNewLabel_2 = new JLabel("");
-		lblNewLabel_2.setIcon(new ImageIcon("E:\\Downloads\\icon oshopp.png"));
+		lblNewLabel_2.setIcon(new ImageIcon("assets\\icon oshopp.png"));
 		lblNewLabel_2.setBounds(10, 0, 74, 79);
 		contentPane.add(lblNewLabel_2);
 
 		JLabel lblNewLabel_4 = new JLabel("");
-		lblNewLabel_4.setIcon(new ImageIcon("E:\\Downloads\\backgroud oshopping.jpg"));
+		lblNewLabel_4.setIcon(new ImageIcon("assets\\backgroud oshopping.jpg"));
 		lblNewLabel_4.setBounds(-143, 90, 680, 79);
 		contentPane.add(lblNewLabel_4);
 
@@ -101,7 +112,7 @@ public class TechnicalErrors extends JFrame {
 		contentPane.add(lblNewLabel_5);
 
 		JLabel lblNewLabel_6 = new JLabel("Please describe your issue below.");
-		lblNewLabel_6.setIcon(new ImageIcon("E:\\Downloads\\note icon.PNG"));
+		lblNewLabel_6.setIcon(new ImageIcon("assets\\xnote icon.PNG"));
 		lblNewLabel_6.setBounds(131, 198, 267, 38);
 		contentPane.add(lblNewLabel_6);
 

@@ -6,11 +6,16 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import controller.DataBaseController;
+import model.Complain;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -22,11 +27,14 @@ import javax.swing.SwingConstants;
 
 public class DamageItems extends JFrame {
 
+	Connection connection = null;
+	DataBaseController dbControl = new DataBaseController();
 	private JPanel contentPane;
-	private JTextField txtAsdas;
+	private JTextField txtAsdas;;
 
 	public DamageItems() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		connection = dbControl.Connect();
+
 		setBounds(100, 100, 535, 635);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
@@ -56,20 +64,31 @@ public class DamageItems extends JFrame {
 		lblNewLabel_1.setBounds(23, 518, 350, 82);
 		contentPane.add(lblNewLabel_1);
 
+		JTextPane textPane_1 = new JTextPane();
+		textPane_1.setBackground(Color.LIGHT_GRAY);
+		textPane_1.setBounds(21, 390, 297, 117);
+		contentPane.add(textPane_1);
+
 		JButton btnNewButton = new JButton("");
-		btnNewButton.setIcon(new ImageIcon("E:\\Downloads\\submit iconz.PNG"));
+		btnNewButton.setIcon(new ImageIcon("assets\\submit iconz.PNG"));
 		btnNewButton.setBackground(new Color(255, 255, 255));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Complain c = new Complain();
 				lblNewLabel_1.setText(
 						"<html>We're sorry you got a faulty item. In the name of my firm, I apologize for any inconvenience. In order to avoid faulty products, we will do our best to solve this problem.</html>");
+
+				c.setCustomerId(Integer.parseInt(txtAsdas.getText()));
+				c.setCustomerConcern(textPane_1.getText());
+				dbControl.prepAddComplain(connection, c);
+
 			}
 		});
 		btnNewButton.setBounds(397, 546, 91, 38);
 		contentPane.add(btnNewButton);
 
 		JLabel lblNewLabel_2 = new JLabel("");
-		lblNewLabel_2.setIcon(new ImageIcon("E:\\Downloads\\icon oshopp.png"));
+		lblNewLabel_2.setIcon(new ImageIcon("assets\\icon oshopp.png"));
 		lblNewLabel_2.setBounds(12, 0, 66, 62);
 		contentPane.add(lblNewLabel_2);
 
@@ -120,14 +139,9 @@ public class DamageItems extends JFrame {
 		contentPane.add(lblConcern_1);
 
 		JLabel lblNewLabel_4 = new JLabel("");
-		lblNewLabel_4.setIcon(new ImageIcon("E:\\Downloads\\backgroud oshopping.jpg"));
+		lblNewLabel_4.setIcon(new ImageIcon("assets\\assetsbackgroud oshopping.jpg"));
 		lblNewLabel_4.setBounds(-140, 75, 752, 67);
 		contentPane.add(lblNewLabel_4);
-
-		JTextPane textPane_1 = new JTextPane();
-		textPane_1.setBackground(Color.LIGHT_GRAY);
-		textPane_1.setBounds(21, 390, 297, 117);
-		contentPane.add(textPane_1);
 
 	}
 }
