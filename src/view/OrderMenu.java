@@ -10,6 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import javax.swing.JRadioButton;
@@ -19,9 +21,12 @@ import javax.swing.JSpinner;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+
 import java.awt.TextArea;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -50,6 +55,9 @@ import javax.swing.JSeparator;
 import javax.swing.JScrollPane;
 import java.awt.Toolkit;
 import javax.swing.border.BevelBorder;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class OrderMenu extends JFrame {
         Connection connection = null;
@@ -89,12 +97,46 @@ public class OrderMenu extends JFrame {
         private JTable table;
 
 
+        private void openPayment(){
+                String[] options = { "OK" };
+                JPanel panel = new JPanel();
+                JLabel lbl = new JLabel("TOTAL: P" + bill + " Enter Payment");
+                JTextField txt = new JTextField(10);
+                panel.add(lbl);
+                panel.add(txt);
+        
+                JPanel panel2 = new JPanel();
+                JLabel lbl2 = new JLabel("Proceed To Shipping");
+                panel2.add(lbl2);
+                try {
+                        int selectedOption = JOptionPane.showOptionDialog(null, panel,
+                                        "Enter Your Payment", JOptionPane.OK_CANCEL_OPTION,
+                                        JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                        if (selectedOption == 0) {
+                                double payment = Double.parseDouble(txt.getText());
+                                double change = payment - bill;
+                                JOptionPane.showMessageDialog(null, "This is your Change: " + change);
+                                int Option2 = JOptionPane.showOptionDialog(null, panel2,
+                                                "Confirmation",
+                                                JOptionPane.OK_CANCEL_OPTION,
+                                                JOptionPane.QUESTION_MESSAGE, null, options,
+                                                options[0]);
+                                if (Option2 == 0) {
+                                        Ship s = new Ship();
+                                        s.setVisible(true);
+                                }
+                        }
+                } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getLocalizedMessage());
+                }
+        }
+
         public OrderMenu() {
                 connection = dbControl.Connect();
                 setBackground(Color.DARK_GRAY);
 
                 setIconImage(Toolkit.getDefaultToolkit().getImage(
-                                "C:\\Users\\trist\\Documents\\_T.I.P\\2nd SEM\\MODULAR 2\\COMPROG\\final proj files\\icon.png"));
+                                "assets\\icon.png"));
                 setResizable(false);
                 setTitle("Ordering and Payment");
                 setFont(new Font("Arial Narrow", Font.PLAIN, 12));
@@ -168,49 +210,7 @@ public class OrderMenu extends JFrame {
                 tbl_inventory.setBackground(new Color(51, 51, 51));
                 tbl_inventory.getTableHeader().setReorderingAllowed(false);
                 tbl_inventory.setModel(dbControl.table_load(connection));
-                // tbl_inventory.setModel(new DefaultTableModel(
-                // new Object[][] {
-                // {new Integer(1), "Logitech H151 Headset", new Double(750.0), new
-                // Integer(10)},
-                // {new Integer(4), "Thermaltake UX 100 ARGB ", new Double(950.0), new
-                // Integer(3)},
-                // {new Integer(5), "Razer Seiren Mini Streaming Microphone", new
-                // Double(2400.0), new Integer(10)},
-                // {new Integer(6), "Logitech G604 Hero Wireless Gaming Mouse", new
-                // Double(4250.0), new Integer(10)},
-                // {new Integer(7), "Logitech Z313 2.1 Speaker And Subwoofer", new
-                // Double(1700.0), new Integer(6)},
-                // {new Integer(8), "Razer Huntsman Mini Purple", new Double(3995.0), new
-                // Integer(9)},
-                // {new Integer(9), "Seagate 1TB Slim Red HDD", new Double(2100.0), new
-                // Integer(7)},
-                // {new Integer(10), "Canon G3010 Wireless 3in1 CIS Printer", new
-                // Double(10550.0), new Integer(4)},
-                // {new Integer(11), "Rapoo C280 USB 2.0 Rotatable Webcam", new Double(1650.0),
-                // new Integer(3)},
-                // {new Integer(12), "Wanbo X1 LCD Projector", new Double(11535.0), new
-                // Integer(6)},
-                // },
-                // new String[] {
-                // "product_id", "product_name", "product_price", "product_qnty"
-                // }
-                // ) {
-                // boolean[] columnEditables = new boolean[] {
-                // false, false, false, false
-                // };
-                // public boolean isCellEditable(int row, int column) {
-                // return columnEditables[column];
-                // }
-                // });
-                // tbl_inventory.getColumnModel().getColumn(0).setResizable(false);
-                // tbl_inventory.getColumnModel().getColumn(0).setMinWidth(50);
-                // tbl_inventory.getColumnModel().getColumn(1).setResizable(false);
-                // tbl_inventory.getColumnModel().getColumn(1).setPreferredWidth(100);
-                // tbl_inventory.getColumnModel().getColumn(1).setMinWidth(100);
-                // tbl_inventory.getColumnModel().getColumn(2).setResizable(false);
-                // tbl_inventory.getColumnModel().getColumn(2).setMinWidth(50);
-                // tbl_inventory.getColumnModel().getColumn(3).setResizable(false);
-                // tbl_inventory.getColumnModel().getColumn(3).setMinWidth(60);
+
                 pane_inventory.setViewportView(tbl_inventory);
 
                 JLabel lblNewLabel = new JLabel("Add Item(ID):");
@@ -335,12 +335,12 @@ public class OrderMenu extends JFrame {
                                                                 item.getProductPrice() * spinValue,
                                                                 item.getProductQty() });
 
+
                                                 bill = dbControl.getSum(tbl_cart.getModel());
                                                 lblTotalBill.setText("TOTAL: " + bill);
                                                 item.setTotalPrice(dbControl.getSum(tbl_cart.getModel()));
                                                 // lblTotalBill.setText("TOTAL: P" + item.getTotalPrice());
                                                 // bill = dbControl.saveTotal(item.getTotalPrice());
-
                                         } catch (Exception e1) {
                                                 e1.printStackTrace();
                                         }
@@ -402,69 +402,48 @@ public class OrderMenu extends JFrame {
                 gbc_btnDelete.gridy = 4;
                 order_payment.add(btnDelete, gbc_btnDelete);
 
-                JButton btnPromos = new JButton("Promos");
+                JButton btnPromos = new JButton("Payment");
                 btnPromos.addActionListener(new ActionListener() {
                 	public void actionPerformed(ActionEvent e) {
-                                Promos promoPane = new Promos(bill);
-                                promoPane.setVisible(true);
-                                
-                                // bill = promoPane.getDiscountedBill();
-                                // lblTotalBill.setText("TOTAL: " + bill);
+                                // lblTotalBill.setText("(DISCOUNTED) TOTAL: " + bill);
+                                // bill = dbControl.getSum(tbl_cart.getModel());
+
+                                String[] promoOptions = { "Yes", "No" };
+                                JPanel promoPanel = new JPanel();
+                                JLabel promoLbl = new JLabel("Avail Promos?");
+                                promoPanel.add(promoLbl);
+                                try {
+                                        int promoSelect = JOptionPane.showOptionDialog(null, promoPanel,
+                                                        "Enter Your Payment", JOptionPane.OK_CANCEL_OPTION,
+                                                        JOptionPane.QUESTION_MESSAGE, null, promoOptions, promoOptions[0]);
+
+                                        if (promoSelect == 0) {
+                                                Promos promoPane = new Promos(bill);
+                                                promoPane.addWindowListener((WindowListener) new WindowAdapter(){
+                                                        @Override
+                                                        public void windowClosing(WindowEvent e1){
+                                                                bill = promoPane.getDiscountedBill();
+                                                                lblTotalBill.setText("(DISCOUNTED) TOTAL: " + bill);
+                                                                // bill = dbControl.getSum(tbl_cart.getModel());
+                                                                openPayment();
+                                                        }
+                                                });
+                                                promoPane.setVisible(true);
+                                        }
+                                        else{
+                                                openPayment();
+                                        }
+                                }catch (Exception e1) {
+                                        JOptionPane.showMessageDialog(null, e1.getLocalizedMessage());
                 	}
-                });
+                }});
+
                 btnPromos.setBackground(new Color(0, 204, 255));
                 GridBagConstraints gbc_btnPromos = new GridBagConstraints();
                 gbc_btnPromos.insets = new Insets(0, 0, 5, 5);
                 gbc_btnPromos.gridx = 2;
                 gbc_btnPromos.gridy = 5;
                 order_payment.add(btnPromos, gbc_btnPromos);
-
-                JButton btn_Payment = new JButton("Payment");
-                btn_Payment.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-
-                                bill = dbControl.getSum(tbl_cart.getModel());
-                                String[] options = { "OK" };
-                                JPanel panel = new JPanel();
-                                JLabel lbl = new JLabel("TOTAL: P" + bill + " Enter Payment");
-                                JTextField txt = new JTextField(10);
-                                panel.add(lbl);
-                                panel.add(txt);
-
-                                JPanel panel2 = new JPanel();
-                                JLabel lbl2 = new JLabel("Proceed To Shipping");
-                                panel2.add(lbl2);
-
-                                try {
-                                        int selectedOption = JOptionPane.showOptionDialog(null, panel,
-                                                        "Enter Your Payment", JOptionPane.OK_CANCEL_OPTION,
-                                                        JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-                                        if (selectedOption == 0) {
-                                                double payment = Double.parseDouble(txt.getText());
-                                                double change = payment - bill;
-                                                JOptionPane.showMessageDialog(null, "This is your Change: " + change);
-                                                int Option2 = JOptionPane.showOptionDialog(null, panel2,
-                                                                "Confirmation",
-                                                                JOptionPane.OK_CANCEL_OPTION,
-                                                                JOptionPane.QUESTION_MESSAGE, null, options,
-                                                                options[0]);
-                                                if (Option2 == 0) {
-                                                	Ship s = new Ship();
-                                                	s.setVisible(true);
-                                                }
-                                        }
-                                } catch (Exception e1) {
-                                        JOptionPane.showMessageDialog(null, e1.getLocalizedMessage());
-                                }
-                        }
-                });
-                btn_Payment.setBackground(new Color(0, 204, 255));
-                GridBagConstraints gbc_btn_Payment = new GridBagConstraints();
-                gbc_btn_Payment.insets = new Insets(0, 0, 5, 5);
-                gbc_btn_Payment.gridx = 5;
-                gbc_btn_Payment.gridy = 5;
-                order_payment.add(btn_Payment, gbc_btn_Payment);
                 // Inventory Add Button to Database
                 JPanel inventory = new JPanel();
                 tabbedPane.addTab("Inventory", null, inventory, null);

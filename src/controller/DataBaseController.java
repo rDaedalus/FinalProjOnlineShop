@@ -24,7 +24,6 @@ public class DataBaseController {
     Connection connection;
     PreparedStatement pst;
     ResultSet rs;
-    int bill;
 
     public Connection Connect() {
         try {
@@ -64,11 +63,6 @@ public class DataBaseController {
         double promoPrice = bill - discountVal;
         return promoPrice;
     }
-
-    // public double setDiscountedBill(double totalInput){
-    //     double total = totalInput;
-    //     return total;
-    // }
 
     public String cartUpdate(Connection con, Product product, int idInput, int qtyInput) throws Exception {
         try {
