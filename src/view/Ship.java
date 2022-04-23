@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -45,24 +46,31 @@ public class Ship extends javax.swing.JFrame {
 		connection = dbControl.Connect();
 		setTitle("Shipping Form");
 
+		setIconImage(Toolkit.getDefaultToolkit().getImage(
+                "assets\\icon.png"));
+		
 		setBounds(100, 100, 552, 690);
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(51, 51, 51));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("RECEIVER'S DETAILS");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblNewLabel.setForeground(new Color(0, 204, 255));
+		lblNewLabel.setFont(new Font("Gadugi", Font.BOLD, 18));
 		lblNewLabel.setBounds(20, 10, 230, 22);
 		contentPane.add(lblNewLabel);
 
 		JLabel lblNewLabel_1 = new JLabel("Last name*");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel_1.setForeground(new Color(255, 255, 255));
+		lblNewLabel_1.setFont(new Font("Gadugi", Font.PLAIN, 15));
 		lblNewLabel_1.setBounds(20, 119, 89, 13);
 		contentPane.add(lblNewLabel_1);
 
 		JLabel lblNewLabel_2 = new JLabel("First name*");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel_2.setForeground(new Color(255, 255, 255));
+		lblNewLabel_2.setFont(new Font("Gadugi", Font.PLAIN, 15));
 		lblNewLabel_2.setBounds(236, 119, 107, 13);
 		contentPane.add(lblNewLabel_2);
 
@@ -72,7 +80,8 @@ public class Ship extends javax.swing.JFrame {
 		lastName.setColumns(10);
 
 		JLabel lblNewLabel_3 = new JLabel("Street Address*");
-		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel_3.setForeground(new Color(255, 255, 255));
+		lblNewLabel_3.setFont(new Font("Gadugi", Font.PLAIN, 15));
 		lblNewLabel_3.setBounds(20, 220, 117, 13);
 		contentPane.add(lblNewLabel_3);
 
@@ -86,22 +95,26 @@ public class Ship extends javax.swing.JFrame {
 		cityAdd.setColumns(10);
 
 		JLabel lblNewLabel_4 = new JLabel("* indicates required field");
-		lblNewLabel_4.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		lblNewLabel_4.setForeground(new Color(204, 204, 204));
+		lblNewLabel_4.setFont(new Font("Gadugi", Font.ITALIC, 11));
 		lblNewLabel_4.setBounds(20, 54, 155, 13);
 		contentPane.add(lblNewLabel_4);
 
 		JLabel lblNewLabel_5 = new JLabel("FULL ADDRESS");
-		lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblNewLabel_5.setForeground(new Color(0, 204, 255));
+		lblNewLabel_5.setFont(new Font("Gadugi", Font.BOLD, 17));
 		lblNewLabel_5.setBounds(20, 189, 138, 13);
 		contentPane.add(lblNewLabel_5);
 
 		JLabel lblNewLabel_6 = new JLabel("FULL NAME");
-		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblNewLabel_6.setForeground(new Color(0, 204, 255));
+		lblNewLabel_6.setFont(new Font("Gadugi", Font.BOLD, 17));
 		lblNewLabel_6.setBounds(20, 92, 117, 13);
 		contentPane.add(lblNewLabel_6);
 
 		JLabel lblNewLabel_7 = new JLabel("City*");
-		lblNewLabel_7.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel_7.setForeground(new Color(255, 255, 255));
+		lblNewLabel_7.setFont(new Font("Gadugi", Font.PLAIN, 15));
 		lblNewLabel_7.setBounds(20, 290, 155, 13);
 		contentPane.add(lblNewLabel_7);
 
@@ -111,7 +124,8 @@ public class Ship extends javax.swing.JFrame {
 		streetAddress.setColumns(10);
 
 		JLabel lblNewLabel_8 = new JLabel("State/Province*");
-		lblNewLabel_8.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel_8.setForeground(new Color(255, 255, 255));
+		lblNewLabel_8.setFont(new Font("Gadugi", Font.PLAIN, 15));
 		lblNewLabel_8.setBounds(236, 292, 123, 13);
 		contentPane.add(lblNewLabel_8);
 
@@ -126,7 +140,8 @@ public class Ship extends javax.swing.JFrame {
 		contentPane.add(firstName);
 
 		JLabel lblNewLabel_7_1 = new JLabel("Zip Code*");
-		lblNewLabel_7_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel_7_1.setForeground(new Color(255, 255, 255));
+		lblNewLabel_7_1.setFont(new Font("Gadugi", Font.PLAIN, 15));
 		lblNewLabel_7_1.setBounds(20, 357, 155, 13);
 		contentPane.add(lblNewLabel_7_1);
 
@@ -136,12 +151,14 @@ public class Ship extends javax.swing.JFrame {
 		contentPane.add(zipcodeAdd);
 
 		JLabel lblNewLabel_6_1 = new JLabel("CONTACT");
-		lblNewLabel_6_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblNewLabel_6_1.setForeground(new Color(0, 204, 255));
+		lblNewLabel_6_1.setFont(new Font("Gadugi", Font.BOLD, 17));
 		lblNewLabel_6_1.setBounds(20, 438, 117, 13);
 		contentPane.add(lblNewLabel_6_1);
 
 		JLabel lblNewLabel_3_1 = new JLabel("Phone Number*");
-		lblNewLabel_3_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel_3_1.setForeground(new Color(255, 255, 255));
+		lblNewLabel_3_1.setFont(new Font("Gadugi", Font.PLAIN, 15));
 		lblNewLabel_3_1.setBounds(20, 470, 117, 13);
 		contentPane.add(lblNewLabel_3_1);
 
@@ -151,7 +168,8 @@ public class Ship extends javax.swing.JFrame {
 		contentPane.add(phonenum);
 
 		JLabel lblNewLabel_3_1_1 = new JLabel("E-mail Address");
-		lblNewLabel_3_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel_3_1_1.setForeground(new Color(255, 255, 255));
+		lblNewLabel_3_1_1.setFont(new Font("Gadugi", Font.PLAIN, 15));
 		lblNewLabel_3_1_1.setBounds(20, 535, 117, 13);
 		contentPane.add(lblNewLabel_3_1_1);
 
@@ -194,7 +212,7 @@ public class Ship extends javax.swing.JFrame {
 				sC.setVisible(true);
 			}
 		});
-		btnNewButton.setBackground(Color.BLUE);
+		btnNewButton.setBackground(new Color(0, 153, 255));
 		btnNewButton.setForeground(Color.WHITE);
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnNewButton.setBounds(429, 603, 96, 33);

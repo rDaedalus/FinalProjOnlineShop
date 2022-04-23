@@ -12,6 +12,7 @@ import model.User;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -29,6 +30,13 @@ public class LoginPage extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		// try{
+		// 	UIManager.setLookAndFeel(
+		// 		UIManager.getSystemLookAndFeelClassName());
+		// } catch(Exception e){
+
+		// }
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
